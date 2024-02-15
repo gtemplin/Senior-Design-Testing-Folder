@@ -1,4 +1,8 @@
 # Senior-Design-Testing-Folder
+### Raspberry Pi SSH Login
+- admin@134.68.225.201
+- password = adminpassword
+- I figured out how to ssh into it from vscode if anyone wants to see lmk
 
 # Todo List (In Rough Order):
 - Add image to DockerHub (Grant)
