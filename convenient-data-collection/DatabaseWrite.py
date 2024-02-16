@@ -12,6 +12,9 @@ print(f'Current path for Sensing.py: {Curpath}')
 debug = False
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+print("Starting DatabaseWrite.py")
+
+
 
 # format a message and send to database
 # the asyncio loop lets this wait until complete w/o bottlenecking the whole program  

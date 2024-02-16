@@ -44,17 +44,17 @@ def yes_or_no():
 
 
 # Run a container w/ several possible options 
-def runContainer(image_name, volume_path_local=None, volume_path_container=None, network=None):
+def runContainer(image_name, image_tag, volume_path_local=None, volume_path_container=None, network=None):
     # Start building the command with the base part
     command = "docker run"
 
     # Add volume if both local and container paths are provided
     if volume_path_local and volume_path_container:
-        command += " -v " + volume_path_local + ":" + volume_path_container
+        command += (" -v " + volume_path_local + ":" + volume_path_container)
 
     # Add network if provided
     if network:
-        command += " --network=" + network
+        command += (" --network=" + network)
 
     # Prompt for running in detached mode
     print("Do you want to run in detached mode (container runs in the background)?")
@@ -69,11 +69,12 @@ def runContainer(image_name, volume_path_local=None, volume_path_container=None,
         command += " -it"
 
     # Add the image name at the end of the command
-    command += " " + image_name
+    command += (" " + image_name + ":" + image_tag)
 
     print("Command to run:", command)  # For demonstration, print the command instead
+    print("Copy+Paste into your terminal and run")
 
-    runCommand(command, "yes")
+
     
 
 

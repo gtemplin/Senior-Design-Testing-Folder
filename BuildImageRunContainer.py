@@ -60,10 +60,10 @@ while True:
         sys.exit()
 
 # Now run the container
-local_volume_directory = "/home/admin/Senior-Design-Testing-Folder/LocalVolume"
+local_volume_directory = "/home/admin/senior-design-testing-folder/local-volume"
 container_volume_directory = "/usr/src/app"
 docker_network = "hassio" # use the network created by home assistant 
-helpers.runContainer(local_volume_directory, container_volume_directory, docker_network)
+helpers.runContainer(image_name, image_tag, local_volume_directory, container_volume_directory, docker_network)
 
 
 

@@ -127,5 +127,26 @@
         "Calibration": 1,
         "IsDataReadyToSent": 0
       }
+    ],
+    "SwitchingPorts": [
+      {
+        "NodeName": "actuator_101",
+        "PortType": "switch",
+        "PortName": "",
+        "PortLabel": "ZwaveZwitch_01",
+        "PollingIntervalInSeconds": 60,
+        "AttachedToEquipment": "Pressure Valve",
+        "SwitchStatus": 0,
+        "ControlType": "Switch",
+        "InputValueUnitName": "N/A",
+        "InputValueUnitSymbol": "N/A",
+        "BrandName": "zwave mini smart plug",
+        "Model": "MP21Z",
+        "Network Source": "Z-Wave",
+        "AssociatedRaspberryPiUnit": "RP001" ,
+        "LowerLimit": 0,
+        "UpperLimit": 1,
+        "PreviousSampleTime": 0
+      }
     ]
   }

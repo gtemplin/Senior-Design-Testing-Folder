@@ -9,7 +9,8 @@ import re
 import pathlib
 # import openhab.oauth2_helper
 import requests
-import RaspberryPieIpAddressMonitor as rp
+#import RaspberryPieIpAddressMonitor as rp
+import urllib3 
 
 # The path variable is passed when the script is called 
 #Curpath = os.getenv('CURPATH', '/usr/src/app')
@@ -19,7 +20,10 @@ print(f'Current path for Sensing.py: {Curpath}')
 # Where to store text files 
 text_file_path = os.path.join(Curpath, "TextFiles")
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+
+print("Starting Sensing.py")
 
 
 ########################
@@ -186,39 +190,6 @@ def pack_sensor_info_msg_3(pc_name, node_name, control_port_name,porttype, brand
     return msg
 
 
-############################################################
-# purpose: collect data from sensors
-# parameters: name of the node that the device is connected to, ID of the sensing device, z-wave network
-# return: current value of the sensor device
-# status: complete
-def read_sensor_data(sensor_id,associated_raspi,RetryCount=0):
-    try:
-        url=systemData["UrlFetchSensorDataAndStatus"] \
-            .replace("<ip_address_homeAssist>",associated_raspi["ip_address_homeAssist"]) \
-            .replace("<portHomeAssist>",associated_raspi["portHomeAssist"]) \
-            .replace("<entity_id>",sensor_id)
-        response=requests.get(url, headers=associated_raspi["headers"])
-
-        if response.status_code==200:
-           currentValue=response.json()['state']
-           if str(currentValue).lower() =="off":
-              return 0
-           if str(currentValue).lower() =="on":
-              return 1
-           currentValue = re.sub("[^0-9^.]", "", str(currentValue))
-           currentValue = (0.00 if currentValue == "" else float(currentValue))
-           return currentValue
-        elif RetryCount<1 and not (response.ok):
-            rp.UpdateIPAddressForRaspberryPie(associated_raspi)
-            return read_sensor_data(sensor_id,associated_raspi,RetryCount+1)
-        return 0.00
-
-    except Exception as e:
-        print('WARNING!!!!!!!!!!!!!!!!!' + sensor_id + ' NOT FOUND/ NOT AVAILABLE\n\n\n -----------------\n\n')
-        currentValue=0.00
-        print(e)
-        print('\n ***************************************************************************************************** \n ')
-    return currentValue
 
 
 ############################################################
@@ -358,6 +329,45 @@ def Prepare_and_Send_Message3(systemData):
         ff.close()
 
 
+
+############################################################
+# purpose: collect data from sensors
+# parameters: name of the node that the device is connected to, ID of the sensing device, z-wave network
+# return: current value of the sensor device
+# status: complete
+def read_sensor_data(sensor_id,associated_raspi,RetryCount=0):
+    try:
+        url=systemData["UrlFetchSensorDataAndStatus"] \
+            .replace("<ip_address_homeAssist>",associated_raspi["ip_address_homeAssist"]) \
+            .replace("<portHomeAssist>",associated_raspi["portHomeAssist"]) \
+            .replace("<entity_id>",sensor_id)
+        response=requests.get(url, headers=associated_raspi["headers"])
+
+        print(response)
+
+        if response.status_code==200:
+           currentValue=response.json()['state']
+           if str(currentValue).lower() =="off":
+              return 0
+           if str(currentValue).lower() =="on":
+              return 1
+           currentValue = re.sub("[^0-9^.]", "", str(currentValue))
+           currentValue = (0.00 if currentValue == "" else float(currentValue))
+           return currentValue
+        elif RetryCount<1 and not (response.ok):
+            #rp.UpdateIPAddressForRaspberryPie(associated_raspi)
+            return read_sensor_data(sensor_id,associated_raspi,RetryCount+1)
+        return 0.00
+
+    except Exception as e:
+        print('WARNING!!!!!!!!!!!!!!!!!' + sensor_id + ' NOT FOUND/ NOT AVAILABLE\n\n\n -----------------\n\n')
+        currentValue=0.00
+        print(e)
+        print('\n ***************************************************************************************************** \n ')
+    return currentValue
+
+
+
 ############################################################
 # purpose: read all sensor data based on each of their sampling inervals
 # parameters: sensor data
@@ -456,7 +466,7 @@ def CheckNodeStatus(nodename, associated_raspi, RetryCount=0):
            if(status in ('alive','asleep')):
               return True
         elif RetryCount<1 and not (response.ok):
-            rp.UpdateIPAddressForRaspberryPie(associated_raspi)
+            #rp.UpdateIPAddressForRaspberryPie(associated_raspi)
             return CheckNodeStatus(nodename, associated_raspi,RetryCount+1)
         return False
     except:
@@ -496,10 +506,10 @@ if __name__ == "__main__":
     Prepare_and_Send_Message0(systemData, IPAddress)
     Prepare_and_Send_Message1(systemData)
     Prepare_and_Send_Message3(systemData)
-    rp.UpdateNetworkDetailsForRasperryPieInBulk(systemData["RaspberryPiUnits"])
+    #rp.UpdateNetworkDetailsForRasperryPieInBulk(systemData["RaspberryPiUnits"])
     previous_database_send_time = 0
 
     while True:
         systemData = Read_All_Sensor_Data(systemData)
         systemData, previous_database_send_time = Prepare_and_Send_Message2(systemData, previous_database_send_time)
-        rp.RefreshIPAddressForRaspberryPiUnitsBulk(systemData["RaspberryPiUnits"])
+        #rp.RefreshIPAddressForRaspberryPiUnitsBulk(systemData["RaspberryPiUnits"])

@@ -6,16 +6,19 @@ import time
 # import openhab.oauth2_helper
 import requests
 import urllib3
-import RaspberryPieIpAddressMonitor as rp
+#import RaspberryPieIpAddressMonitor as rp
 
 Curpath = os.getenv('CURPATH', '/usr/src/app')
 print(f'Current path for ActuatorControl.py: {Curpath}')
 
 text_files_folder_path = os.path.join(Curpath, "TextFiles")
 
+print("Starting ActuatorControl.py")
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 lastActuatorSyncTime=time.time()
+
+print("Time + warnings disabled")
 
 def read_request_from_database(address, msg_id):
 
@@ -100,7 +103,7 @@ def CheckCommandExecution(command,associated_raspi, RetryCount=0):
         if command["CommandValue"] == stateEncoded.__str__():
             return True
     elif RetryCount<1 and not (response.ok):
-        rp.UpdateIPAddressForRaspberryPie(associated_raspi)
+        #rp.UpdateIPAddressForRaspberryPie(associated_raspi)
         return CheckCommandExecution(command,associated_raspi,RetryCount+1)
     return False
 
@@ -123,7 +126,7 @@ def ExecuteRequestCommand(entity_id,command,associated_raspi, RetryCount=0):
         print(f"Switch {entity_id} successfully turned {'on' if turn_on else 'off'}")
         return
     elif RetryCount<1 and not (response.ok):
-        rp.UpdateIPAddressForRaspberryPie(associated_raspi)
+        #rp.UpdateIPAddressForRaspberryPie(associated_raspi)
         ExecuteRequestCommand(entity_id,command,associated_raspi,RetryCount+1)
         return
     else:
@@ -143,14 +146,15 @@ def GenerateLabelForActuator(command):
 js = os.path.join(Curpath, "ConfigurationFiles", "configCustomer.json")
 config = json_to_dict(js)
 webserver_address = config['WebserverAddress']
-rp.RefreshIPAddressForRaspberryPiUnitsBulk(config["RaspberryPiUnits"])
+#rp.RefreshIPAddressForRaspberryPiUnitsBulk(config["RaspberryPiUnits"])
 
+print("Finished setup")
 
 try:
     while True:
         actuator_requests = read_request_from_database(webserver_address, "4")
         if actuator_requests!= []:
-            rp.RefreshIPAddressForRaspberryPiUnitsBulk(config["RaspberryPiUnits"])
+            #rp.RefreshIPAddressForRaspberryPiUnitsBulk(config["RaspberryPiUnits"])
             for command in actuator_requests:
                 command['UpdatedCommand']=""
                 label=GenerateLabelForActuator(command)
