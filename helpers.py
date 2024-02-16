@@ -12,7 +12,7 @@ def runCommand(command, printOutput=None):
 
 
 # Returns True if docker is installed, False if not
-def dockerInsalled():
+def dockerInstalled():
     docker_status = runCommand("docker --version")
     docker_status = docker_status.split()
     if docker_status[0] == "Docker" and docker_status[1] == "version":

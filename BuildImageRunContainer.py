@@ -11,22 +11,22 @@ if not dockerStatus:
 # Show the user their present directory and it's subdirectories
 # for copy-paste purposes
 print("Your PWD and it's subdirectories:\n")
-helpers.Runcommand("pwd", "yes")
-helpers.Runcommand("ls", "yes")
+helpers.runCommand("pwd", "yes")
+helpers.runCommand("ls", "yes")
 helpers.spacing(2)
 
 
 # Show images for copy-paste purposes 
-helpers.Runcommand("docker images", "yes")
+helpers.runCommand("docker images", "yes")
 helpers.spacing(2)
-print("Input spaces will be replaced with a dash")
+print("Input spaces will be replaced with a dash. Uppercase will be converted to lowercase")
 
 # Get the image to instantiate through a container
-image_name = input("Enter the image name: ")
+image_name = str.lower( input("Enter the image name: "))
 image_name = image_name.replace(" ", "-")
 
 # Get the container tag
-image_tag = input("Enter the image tag: ")
+image_tag = str.lower ( input("Enter the image tag: ") )
 image_tag = image_tag.replace(" ", "-")
 helpers.spacing(2)
 
@@ -53,7 +53,7 @@ build = input("To build your image press enter, or enter exit to quit:")
 while True:
     if build == "":
         build_command = "docker build -t " + image_name + ":" + image_tag + " " + build_directory
-        helpers.Runcommand(build_command, "yes")
+        helpers.runCommand(build_command, "yes")
         break
     elif build == "exit":
         print("Terminating program")
