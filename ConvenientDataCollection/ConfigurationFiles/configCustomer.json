@@ -18,9 +18,9 @@
       "UnitName": "RP001",
       "ip_address_homeAssist": "",
       "portHomeAssist": "",
-      "api_token_homeAssist": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhMDI0ZGJmZGQ3NjU0ZDIxYWVmMjNlZmE5M2JhOGY5NiIsImlhdCI6MTY4NjYwNTk0MCwiZXhwIjoyMDAxOTY1OTQwfQ.XT-mK2TpQMv6jvMRV1-ru0cVFAomxSbiE-VwFP0Pn88",
+      "api_token_homeAssist": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxZDRjOGEzZDcwOTY0ZjBhOTc0OTU4Y2I0YzgyODA4OSIsImlhdCI6MTcwODA0Nzc0NSwiZXhwIjoyMDIzNDA3NzQ1fQ.YMImMN9S4cxT56mFCtK4cRmQT-8ohM7sk4V2EFjno1Q",
       "headers": {
-        "Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhMDI0ZGJmZGQ3NjU0ZDIxYWVmMjNlZmE5M2JhOGY5NiIsImlhdCI6MTY4NjYwNTk0MCwiZXhwIjoyMDAxOTY1OTQwfQ.XT-mK2TpQMv6jvMRV1-ru0cVFAomxSbiE-VwFP0Pn88",
+        "Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxZDRjOGEzZDcwOTY0ZjBhOTc0OTU4Y2I0YzgyODA4OSIsImlhdCI6MTcwODA0Nzc0NSwiZXhwIjoyMDIzNDA3NzQ1fQ.YMImMN9S4cxT56mFCtK4cRmQT-8ohM7sk4V2EFjno1Q",
         "Content-Type": "application/json"
       },
       "PreviousIpSynchronizationTimeStamp": 0
