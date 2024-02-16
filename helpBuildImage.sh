@@ -2,11 +2,11 @@
 
 echo "Local docker images: "
 docker images 
-
+echo " "
 echo "Build template:"
 echo "docker build -t {image name}:{image tag} {directory}"
 echo "Note: to use your pwd, directory = . "
-
+echo " "
 echo "Enter your desired image name, image tag, and directory with dockerfile (in that order)"
 read name tag directory
 

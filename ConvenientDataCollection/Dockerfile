@@ -2,10 +2,10 @@
 FROM python:3.10.10
 
 # Set the containers working directory 
-WORKDIR /usr/src/app
+WORKDIR /home/admin
 
 # Set the path environment variable 
-ENV CURPATH=/usr/src/app
+ENV CURPATH=/home/admin
 
 # Install requirements not in the standard library 
 COPY requirements.txt ./
@@ -15,7 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Declare the BackupData directory as a volume
-VOLUME /usr/src/app/BackupData
+#VOLUME /usr/src/app/BackupData
+VOLUME /home/admin
 
 # Start running the root process 
 CMD ["python", "./RootProcess.py"]

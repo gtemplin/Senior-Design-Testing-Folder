@@ -1,38 +1,36 @@
 import sys
 import os 
-import subprocess
+import helpers # from helpers.py which has useful functions 
 
-def runCommand(command, printOutput=None):
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    if result.returncode != 0:
-        print("Error:\n", result.stderr)
-    if printOutput is not None:
-        print("Output:\n", result.stdout)
-    return result.stdout
-
-# Make sure docker installed 
-docker_status = runCommand("docker --version")
-docker_status = docker_status.split()
-if docker_status[0] == "Docker" and docker_status[1] == "version":
-    pass
-else:
-    print("Docker not installed. Install it before continuing \nTerminating program")
+# Ensure Docker is installed before doing anything 
+dockerStatus = helpers.dockerInstalled()
+if not dockerStatus:
     sys.exit()
 
 
-
+# Show the user their present directory and it's subdirectories
+# for copy-paste purposes
 print("Your PWD and it's subdirectories:\n")
-runCommand("pwd", "yes")
-runCommand("ls", "yes")
-print("\n\n")
+helpers.Runcommand("pwd", "yes")
+helpers.Runcommand("ls", "yes")
+helpers.spacing(2)
 
-print("Image names/tags can't have spaces")
+
+# Show images for copy-paste purposes 
+helpers.Runcommand("docker images", "yes")
+helpers.spacing(2)
+print("Input spaces will be replaced with a dash")
+
+# Get the image to instantiate through a container
 image_name = input("Enter the image name: ")
 image_name = image_name.replace(" ", "-")
 
+# Get the container tag
 image_tag = input("Enter the image tag: ")
 image_tag = image_tag.replace(" ", "-")
-print("\n\n")
+helpers.spacing(2)
+
+
 
 while True: 
     build_directory = input("Enter the build directory, or press enter for PWD: ")
@@ -48,16 +46,24 @@ while True:
     else:
         print("Building from " + build_directory)
         break
-print("\n\n")
+helpers.spacing(2)
+
+
 build = input("To build your image press enter, or enter exit to quit:")
 while True:
     if build == "":
         build_command = "docker build -t " + image_name + ":" + image_tag + " " + build_directory
-        runCommand(build_command, "yes")
+        helpers.Runcommand(build_command, "yes")
         break
     elif build == "exit":
         print("Terminating program")
         sys.exit()
+
+# Now run the container
+local_volume_directory = "/home/admin/Senior-Design-Testing-Folder/LocalVolume"
+container_volume_directory = "/usr/src/app"
+docker_network = "hassio" # use the network created by home assistant 
+helpers.runContainer(local_volume_directory, container_volume_directory, docker_network)
 
 
 

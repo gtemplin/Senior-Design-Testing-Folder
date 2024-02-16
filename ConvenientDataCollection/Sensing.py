@@ -12,7 +12,8 @@ import requests
 import RaspberryPieIpAddressMonitor as rp
 
 # The path variable is passed when the script is called 
-Curpath = os.getenv('CURPATH', '/usr/src/app')
+#Curpath = os.getenv('CURPATH', '/usr/src/app')
+Curpath = os.getenv('CURPATH', '/home/admin/Senior-Design-Testing-Folder')
 print(f'Current path for Sensing.py: {Curpath}')
 
 # Where to store text files 
@@ -362,7 +363,7 @@ def Prepare_and_Send_Message3(systemData):
 # parameters: sensor data
 # return: sensor data
 # status: complete
-def Read_Sensor_Data(systemData):
+def Read_All_Sensor_Data(systemData):
     SensorDataStatus=[]
     for sensor in systemData["SensingPorts"]:
         if update_time_flag(sensor["PreviousSampleTime"],
@@ -375,7 +376,7 @@ def Read_Sensor_Data(systemData):
                 print("Error: No associated raspi found for sensor: " + sensor["NodeName"] + " " + sensor["PortName"])
                 continue;
             if CheckNodeStatus(sensor["NodeName"],associated_raspi):
-                value=read_sensor_data(label, associated_raspi);
+                value=read_sensor_data(label, associated_raspi)
                 sensor_reading = output_to_meaning(value,float(sensor["InputValueLowerBound"]),float(sensor["InputValueUpperBound"]),float(sensor["InputMeaningLowerBound"]),float(sensor["InputMeaningUpperBound"]))
             else:
                 sensor_reading=99999
@@ -499,6 +500,6 @@ if __name__ == "__main__":
     previous_database_send_time = 0
 
     while True:
-        systemData = Read_Sensor_Data(systemData)
+        systemData = Read_All_Sensor_Data(systemData)
         systemData, previous_database_send_time = Prepare_and_Send_Message2(systemData, previous_database_send_time)
         rp.RefreshIPAddressForRaspberryPiUnitsBulk(systemData["RaspberryPiUnits"])
