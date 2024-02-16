@@ -6,7 +6,9 @@
 
 ### Raspberry Pi Directory Structure 
 - Everything will be based in the admin's home directory (just input 'cd' to get here once logged in)
-- 
+
+### Home Assistant API Token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxZDRjOGEzZDcwOTY0ZjBhOTc0OTU4Y2I0YzgyODA4OSIsImlhdCI6MTcwODA0Nzc0NSwiZXhwIjoyMDIzNDA3NzQ1fQ.YMImMN9S4cxT56mFCtK4cRmQT-8ohM7sk4V2EFjno1Q
 
 # Todo List (In Rough Order):
 - Add image to DockerHub (Grant)
