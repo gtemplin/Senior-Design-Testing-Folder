@@ -12,9 +12,11 @@ import requests
 #import RaspberryPieIpAddressMonitor as rp
 import urllib3 
 
+print("Starting Sensing.py")
+
 # The path variable is passed when the script is called 
-#Curpath = os.getenv('CURPATH', '/usr/src/app')
-Curpath = os.getenv('CURPATH', '/home/admin/Senior-Design-Testing-Folder')
+Curpath = os.getenv('CURPATH', '/usr/src/app')
+#Curpath = os.getenv('CURPATH', '/home/admin/Senior-Design-Testing-Folder')
 print(f'Current path for Sensing.py: {Curpath}')
 
 # Where to store text files 
@@ -23,7 +25,7 @@ text_file_path = os.path.join(Curpath, "TextFiles")
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-print("Starting Sensing.py")
+
 
 
 ########################
@@ -343,7 +345,7 @@ def read_sensor_data(sensor_id,associated_raspi,RetryCount=0):
             .replace("<entity_id>",sensor_id)
         response=requests.get(url, headers=associated_raspi["headers"])
 
-        print(response)
+        print(f"Read sensor response: {response}")
 
         if response.status_code==200:
            currentValue=response.json()['state']

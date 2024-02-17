@@ -8,12 +8,15 @@ import requests
 import urllib3
 #import RaspberryPieIpAddressMonitor as rp
 
+with open('actuator.txt', 'w') as file:
+    pass  # Do nothing with the file
+
+print("Starting ActuatorControl.py")
+
 Curpath = os.getenv('CURPATH', '/usr/src/app')
 print(f'Current path for ActuatorControl.py: {Curpath}')
 
 text_files_folder_path = os.path.join(Curpath, "TextFiles")
-
-print("Starting ActuatorControl.py")
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 lastActuatorSyncTime=time.time()
@@ -21,7 +24,6 @@ lastActuatorSyncTime=time.time()
 print("Time + warnings disabled")
 
 def read_request_from_database(address, msg_id):
-
     try:
         response = requests.get(address.format(msg_id, "x"), verify=False)
         if response.ok:
@@ -161,12 +163,11 @@ try:
                 actuator = next((unit for unit in config["SwitchingPorts"] if unit["NodeName"] ==  command["NodeName"]), None)
                 associated_raspi = next((unit for unit in config["RaspberryPiUnits"] if unit["UnitName"] == actuator["AssociatedRaspberryPiUnit"]), None)
                 print(associated_raspi)
-                if associated_raspi is  None:
+                if associated_raspi is None:
                     print("Error: No associated raspi found for sensor: " + command["NodeName"] + " " + command["PortName"])
                     continue
                 ExecuteRequestCommand(label,command,associated_raspi)
             AcknowledgeCommand(actuator_requests)
-
 
 
 except Exception as e:
@@ -175,5 +176,4 @@ except Exception as e:
     print(e)
     print(e.__str__())
     print('-----------------------------------------------------------------------------------------------')
-    exit(0)
-    pass
+    exit(1)

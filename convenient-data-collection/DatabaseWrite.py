@@ -6,14 +6,13 @@ import asyncio  # helps manage multiple IO related tasks
 import urllib3  # used for making requests to web servers through http 
 
 
+print("Starting DatabaseWrite.py")
+
 Curpath = os.getenv('CURPATH', '/usr/src/app')
 print(f'Current path for Sensing.py: {Curpath}')
 
-debug = False
+debug = True
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-print("Starting DatabaseWrite.py")
-
 
 
 # format a message and send to database

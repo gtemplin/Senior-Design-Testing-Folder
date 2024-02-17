@@ -22,7 +22,7 @@ def execute_script(script_path):
 
 def debug_exec_script(script_path):
     # Start the script using Popen and set stdout and stderr to subprocess.PIPE
-    process = subprocess.Popen(['python', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(['python3', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     # Monitor the stdout and stderr of the process
     while True:
@@ -61,13 +61,14 @@ if __name__ == '__main__':
         os.path.join(Curpath, 'ActuatorControl.py'),
         os.path.join(Curpath, 'DatabaseWrite.py')
     ]
+    numProcesses = len(processes)
 
     print("Starting root process: ")
  # this sets up the parallel processing
     with contextlib.suppress(KeyboardInterrupt):
         print("Inside with")
-        pool = multiprocessing.Pool(processes=3)
-        # pool.map(execute_script, processes)
+        pool = multiprocessing.Pool(processes=numProcesses)
+        #pool.map(execute_script, processes)
         pool.map(debug_exec_script, processes)
         pool.close()
         pool.join()
