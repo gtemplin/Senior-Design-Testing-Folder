@@ -8,8 +8,6 @@ import requests
 import urllib3
 #import RaspberryPieIpAddressMonitor as rp
 
-with open('actuator.txt', 'w') as file:
-    pass  # Do nothing with the file
 
 print("Starting ActuatorControl.py")
 
@@ -154,7 +152,8 @@ print("Finished setup")
 
 try:
     while True:
-        actuator_requests = read_request_from_database(webserver_address, "4")
+        # fixlater actuator_requests = read_request_from_database(webserver_address, "4")
+        actuator_requests = []
         if actuator_requests!= []:
             #rp.RefreshIPAddressForRaspberryPiUnitsBulk(config["RaspberryPiUnits"])
             for command in actuator_requests:
@@ -172,7 +171,7 @@ try:
 
 except Exception as e:
     print('------------------------------------------------------------------------------------------------')
-    print('Error in Actuator.py')
+    print('Error in ActuatorControl.py')
     print(e)
     print(e.__str__())
     print('-----------------------------------------------------------------------------------------------')

@@ -19,3 +19,4 @@ read image imagetag username hubtab
 
 docker tag $image:$imagetag $username/$repository:$hubtab
 docker push $username/$repository:$hubtab
+

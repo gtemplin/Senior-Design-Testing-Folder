@@ -6,7 +6,10 @@
 
 ### Raspberry Pi Directory Structure 
 - Everything will be based in the admin's home directory (just input 'cd' to get here once logged in)
-- 
+
+### Figure out list:
+- Logging on each thread for error (Grant)
+- Find out what address is needed to communicate with web server (changing configuration files) 
 
 # Todo List (In Rough Order):
 - Add image to DockerHub (Grant)

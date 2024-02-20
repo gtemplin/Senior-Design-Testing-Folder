@@ -76,7 +76,7 @@ config = json_to_dict(config_file_path)
 webserver_address = config['WebserverAddress']
 
 # Create path to backup text file 
-text_files_folder_path = os.path.join(Curpath, "TextFiles")
+text_files_folder_path = os.path.join(Curpath, "BackupData")
 backup_file_path = os.path.join(text_files_folder_path, "BackupData.txt")
 # Create the backup text file 
 if not os.path.isfile(backup_file_path):
