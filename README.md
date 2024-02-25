@@ -22,6 +22,7 @@ Find a way for us to remotely monitor the historical values.
 - Start long-term monitoring of running system (Everyone)
 - Make sure Home Assistant Supervised restarts when the pi is turned off
 - Figure out platform error: "WARNING: The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64/v3) and no specific platform was requested"
-- Note on platform error: the container still ran and gathered data, but I don't know what trouble the error could end up causing later down the line 
+- Note on platform error: the container still ran and gathered data, but I don't know what trouble the error could end up causing later down the line
+- Test backup folder, see if can access through local machine's volume
   
 
