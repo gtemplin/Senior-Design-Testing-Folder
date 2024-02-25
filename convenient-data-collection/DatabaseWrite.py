@@ -6,10 +6,13 @@ import asyncio  # helps manage multiple IO related tasks
 import urllib3  # used for making requests to web servers through http 
 
 
-print("Starting DatabaseWrite.py")
+print("Starting DatabaseWrite.py", flush=True)
+# fp = open('Database.txt', 'x')
+# fp.close()
+# print("Test output", flush=True)
 
 Curpath = os.getenv('CURPATH', '/usr/src/app')
-print(f'Current path for Sensing.py: {Curpath}')
+print(f'Current path for DatabaseWrite.py: {Curpath}', flush=True)
 
 debug = True
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -21,17 +24,18 @@ def send_to_database(address, msg):
     try:
         if msg!='':
             url=address.format(msg[0: 1], msg[2:])
+            print(url, flush=True)
             loop = asyncio.get_event_loop()
             return loop.run_until_complete(sendData(url))
     except ConnectionError as c:
         return False
     except Exception as c:
-        print(c)
+        print(c, flush=True)
         return False
 
 # uses an http get request to send the data 
 async def sendData(url):
-    print(url)
+    print(url, flush=True)
     response= requests.get(url, verify=False)
     return bool(int(response.status_code)==200)
 
@@ -76,16 +80,22 @@ config = json_to_dict(config_file_path)
 webserver_address = config['WebserverAddress']
 
 # Create path to backup text file 
-text_files_folder_path = os.path.join(Curpath, "BackupData")
-backup_file_path = os.path.join(text_files_folder_path, "BackupData.txt")
+#text_files_folder_path = os.path.join(Curpath, "BackupData")
+backup_file_path = os.path.join(Curpath, "BackupData",  "BackupData.txt")
+print(backup_file_path, flush=True)
+
 # Create the backup text file 
 if not os.path.isfile(backup_file_path):
-    # Create the file if it does not exist
     with open(backup_file_path, "x") as f:
-        # File is created, 'f.close()' is called automatically
-        print("Backup text file created in 'TextFiles' folder")
+        print(f"Backup text file created in {backup_file_path}", flush=True) # File is created, 'f.close()' is called automatically
 
-
+# if debug:
+#     if not os.path.exists(backup_file_path):
+#         with open(backup_file_path, 'w') as file:
+#             file.write("Hello, Geeks!")
+#         print("Wrote to file", flush=True)       
+#     else:
+#         print(f"The file '{backup_file_path}' already exists.", flush=True)
 
 
 
@@ -106,7 +116,7 @@ while True:
             try:
                 os.remove(communication_flag_path)
             except Exception:
-                print("CommunicationFlag is not deleted")
+                print("CommunicationFlag is not deleted", flush=True)
                 pass
             formatted_system_data_path = os.path.join(Curpath, "FormattedSystemData.txt")
             with open(formatted_system_data_path, "r+") as file:
@@ -119,7 +129,7 @@ while True:
             try:
                 os.remove(communication_flag_actuator_path)
             except Exception:
-                print("CommunicationFlagActuator is not deleted")
+                print("CommunicationFlagActuator is not deleted", flush=True)
                 pass
             formatted_system_data_actuator_path = os.path.join(Curpath, "FormattedSystemDataActuator.txt")
             with open(formatted_system_data_actuator_path, "r+") as file2:
@@ -130,7 +140,7 @@ while True:
         fileContents= fileContents + fileContentsActuator
 
         if debug:
-            print("FILE CONTENTS: {}".format(fileContents))
+            print("FILE CONTENTS: {}".format(fileContents), flush=True)
 
 
 # Parse through the file contents until you get to the delimiter ($)
@@ -141,14 +151,14 @@ while True:
             if fileContents[i] == "$":
                 msg = fileContents[start_index: i] ## TRY DIFFERENT SUBSTRING METHOD
                 if debug:
-                    print("sending: {}".format(msg))
+                    print("sending: {}".format(msg), flush=True)
                 successfulSend = send_to_database(webserver_address, msg)
                 start_index = i+1
                 
 
 # This portion backs up the data if it wasn't successful and sends any data in the backup text file to the database
         if not successfulSend:
-            print("CONNECTION IS DOWN--BACKING UP DATA")
+            print("CONNECTION IS DOWN--BACKING UP DATA", flush=True)
             write_to_backup(backup_file_path, fileContents)
         else:
             backup = open(backup_file_path)

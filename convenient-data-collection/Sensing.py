@@ -13,11 +13,15 @@ import requests
 import urllib3 
 
 print("Starting Sensing.py")
+fp = open('Sensing.txt', 'x')
+fp.close()
+print("Test output", flush=True)
+
 
 # The path variable is passed when the script is called 
 Curpath = os.getenv('CURPATH', '/usr/src/app')
 #Curpath = os.getenv('CURPATH', '/home/admin/Senior-Design-Testing-Folder')
-print(f'Current path for Sensing.py: {Curpath}')
+print(f'Current path for Sensing.py: {Curpath}', flush=True)
 
 # Where to store text files 
 text_file_path = os.path.join(Curpath, "TextFiles")
@@ -343,9 +347,9 @@ def read_sensor_data(sensor_id,associated_raspi,RetryCount=0):
             .replace("<ip_address_homeAssist>",associated_raspi["ip_address_homeAssist"]) \
             .replace("<portHomeAssist>",associated_raspi["portHomeAssist"]) \
             .replace("<entity_id>",sensor_id)
-        response=requests.get(url, headers=associated_raspi["headers"])
-
-        print(f"Read sensor response: {response}")
+        response=requests.get(url, headers=associated_raspi["headers"]) #tag
+        print(f"URL used: {url}", flush=True)
+        print(f"Read sensor response: {response}", flush=True)
 
         if response.status_code==200:
            currentValue=response.json()['state']
@@ -362,10 +366,10 @@ def read_sensor_data(sensor_id,associated_raspi,RetryCount=0):
         return 0.00
 
     except Exception as e:
-        print('WARNING!!!!!!!!!!!!!!!!!' + sensor_id + ' NOT FOUND/ NOT AVAILABLE\n\n\n -----------------\n\n')
+        print('WARNING!!!!!!!!!!!!!!!!!' + sensor_id + ' NOT FOUND/ NOT AVAILABLE\n\n\n -----------------\n\n', flush=True)
         currentValue=0.00
-        print(e)
-        print('\n ***************************************************************************************************** \n ')
+        print(e, flush=True)
+        print('\n ***************************************************************************************************** \n ', flush=True)
     return currentValue
 
 
@@ -380,14 +384,15 @@ def Read_All_Sensor_Data(systemData):
     for sensor in systemData["SensingPorts"]:
         if update_time_flag(sensor["PreviousSampleTime"],
                             sensor['PollingIntervalInSeconds']):
-
             label =sensor["PortType"]+'.'+sensor["NodeName"].replace('-','') + "_" + sensor["PortName"]
+            print(label, flush=True)
             value=0
             associated_raspi = next((unit for unit in systemData["RaspberryPiUnits"] if unit["UnitName"] == sensor["AssociatedRaspberryPiUnit"]), None)
             if associated_raspi is  None:
-                print("Error: No associated raspi found for sensor: " + sensor["NodeName"] + " " + sensor["PortName"])
+                print("Error: No associated raspi found for sensor: " + sensor["NodeName"] + " " + sensor["PortName"], flush=True)
                 continue;
-            if CheckNodeStatus(sensor["NodeName"],associated_raspi):
+            if CheckNodeStatus(sensor["NodeName"],associated_raspi): #tag
+                print('----------------------------------------', flush=True)
                 value=read_sensor_data(label, associated_raspi)
                 sensor_reading = output_to_meaning(value,float(sensor["InputValueLowerBound"]),float(sensor["InputValueUpperBound"]),float(sensor["InputMeaningLowerBound"]),float(sensor["InputMeaningUpperBound"]))
             else:
@@ -402,13 +407,14 @@ def Read_All_Sensor_Data(systemData):
             sensor["IsDataReadyToSent"]=1
             tstamp=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
             dataArray = [tstamp,sensor["NodeName"],sensor["PortName"],value, sensor_reading]
-            if ConvertToBoolean(flag['read_sensor_data_debug_flag']):
-                print("Node: " + str(sensor["NodeName"]))
-                print("Port Type: " + str(sensor["PortType"]))
-                print("Label: " + label)
-                print("Sensor Reading: " + str(sensor_reading))
-                print("proccessedData: " + str(proccessedData))
-                print('----------------------------------------')
+            #if ConvertToBoolean(flag['read_sensor_data_debug_flag']):
+            if(True): # fixthis
+                print("Node: " + str(sensor["NodeName"]), flush=True)
+                print("Port Type: " + str(sensor["PortType"]), flush=True)
+                print("Label: " + label, flush=True)
+                print("Sensor Reading: " + str(sensor_reading), flush=True)
+                #print("proccessedData: " + str(proccessedData), flush=True)
+                print('----------------------------------------', flush=True)
             if ConvertToBoolean(flag["check_sensor_data_validity_flag"]):
                 SensorDataStatus.append(dataArray)
     if ConvertToBoolean(flag["check_sensor_data_validity_flag"]):
@@ -455,24 +461,24 @@ def CheckNodeStatus(nodename, associated_raspi, RetryCount=0):
     url=systemData["UrlFetchSensorDataAndStatus"] \
         .replace("<ip_address_homeAssist>",associated_raspi["ip_address_homeAssist"]) \
         .replace("<portHomeAssist>",associated_raspi["portHomeAssist"]) \
-        .replace("<entity_id>",nodeStatuslabel)
-    print(url)
-    print(nodeStatuslabel)
-
+        .replace("<entity_id>",nodeStatuslabel) #tag
+    print(url, flush=True)
+    print(nodeStatuslabel, flush=True)
+    print("Inside checkNodeStatus", flush=True)
     try:
         response=requests.get(url, headers=associated_raspi["headers"])
-        print(response.status_code)
+        print(response.status_code, flush=True)
         if(response.status_code==200):
-           status=response.json()['state']
-           print(status)
-           if(status in ('alive','asleep')):
-              return True
+            status=response.json()['state']
+            print(f"Status of {nodename}: {status}", flush=True)
+            if(status in ('alive','asleep')):
+                return True
         elif RetryCount<1 and not (response.ok):
             #rp.UpdateIPAddressForRaspberryPie(associated_raspi)
             return CheckNodeStatus(nodename, associated_raspi,RetryCount+1)
         return False
     except:
-        return False
+       return False
 
 
 # $$$$$$$$$$ Adjusting Node Config ########################################

@@ -11,8 +11,6 @@ Curpath = os.getenv('CURPATH', '/usr/src/app')
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-print("Root process's top ")
-
 # Execute Script, outputs the standard error if applicable 
 def execute_script(script_path):
     try:
@@ -20,29 +18,22 @@ def execute_script(script_path):
     except subprocess.CalledProcessError as e:
         print(f"Error executing {script_path}: {e}\nError Output:\n{e.stderr}")
 
-def debug_exec_script(script_path):
-    # Start the script using Popen and set stdout and stderr to subprocess.PIPE
-    process = subprocess.Popen(['python3', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-    # Monitor the stdout and stderr of the process
-    while True:
-        reads = [process.stdout.fileno(), process.stderr.fileno()]
-        ret = select.select(reads, [], [])
-
-        for fd in ret[0]:
-            if fd == process.stdout.fileno():
-                print(process.stdout.readline().strip())
-            if fd == process.stderr.fileno():
-                print("ERROR:", process.stderr.readline().strip())
-
-        if process.poll() is not None:
-            break
-
-    # Check if the process has exited and any remaining output
-    if process.returncode is not None:
-        print(f"Process {script_path} completed with return code {process.returncode}")
 
 
+def labeled_exec_script(script_path):
+    script_name = os.path.basename(script_path)  # Extract the script name from the path
+    try:
+        # Start the subprocess and specify stdout and stderr to be piped
+        with subprocess.Popen(['python', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
+            # Monitor the stdout
+            for line in process.stdout:  # This will also capture stderr if you want them combined
+                print(f"{line.strip()} <-- from {script_name}")  # Append script name to each output line
+            # Check for any errors, appending the script name as well
+            _, stderr = process.communicate()
+            if stderr:
+                print(f"Error executing {script_name}:\n{stderr.strip()} <-- from {script_name}")
+    except Exception as e:
+        print(f"Error executing {script_name}: {e} <-- from {script_name}")
 
 
 # Main Function 
@@ -66,9 +57,10 @@ if __name__ == '__main__':
     print("Starting root process: ")
  # this sets up the parallel processing
     with contextlib.suppress(KeyboardInterrupt):
-        print("Inside with")
+        #print("Inside with")
         pool = multiprocessing.Pool(processes=numProcesses)
         #pool.map(execute_script, processes)
-        pool.map(debug_exec_script, processes)
+        #pool.map(debug_exec_script, processes)
+        pool.map(labeled_exec_script, processes)
         pool.close()
         pool.join()
