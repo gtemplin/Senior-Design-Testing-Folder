@@ -9,8 +9,11 @@ import urllib3
 Curpath = os.getenv('CURPATH', '/usr/src/app')
 log_file_path = os.path.join(Curpath, "BackupData", "overnightlog.txt") # store the data logs in a text file 
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# The following path will only use RAM for storage 
+RAM_storage_path = '/tmp/convenient-data-collection'
+os.makedirs(RAM_storage_path, exist_ok=True)
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Execute Script, outputs the standard error if applicable 
 def execute_script(script_path):
@@ -23,23 +26,21 @@ def execute_script(script_path):
 
 def labeled_exec_script(script_path):
     script_name = os.path.basename(script_path)  # Extract the script name from the path
-    output = []
     try:
         # Start the subprocess and specify stdout and stderr to be piped
         with subprocess.Popen(['python', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
             # Monitor the stdout
             for line in process.stdout:  # This will also capture stderr if you want them combined
                 print(f"{line.strip()} <-- from {script_name}")  # Append script name to each output line
-                with open(log_file_path, mode="a") as file:
-                    file.write(f"{line.strip()} <-- from {script_name} \n")
+               # with open(log_file_path, mode="a") as file:
+                #    file.write(f"{line.strip()} <-- from {script_name} \n")
 
             # Check for any errors, appending the script name as well
             _, stderr = process.communicate()
             if stderr:
                 print(f"Error executing {script_name}:\n{stderr.strip()} <-- from {script_name}")
-                with open(log_file_path, mode="a") as file:
-                    file.write(f"Error executing {script_name}:\n{stderr.strip()} <-- from {script_name}")
-
+                #with open(log_file_path, mode="a") as file:
+                 #   file.write(f"Error executing {script_name}:\n{stderr.strip()} <-- from {script_name}")
     except Exception as e:
         print(f"Error executing {script_name}: {e} <-- from {script_name}")
 
@@ -48,10 +49,12 @@ def labeled_exec_script(script_path):
 if __name__ == '__main__':
     try:
         os.remove(os.path.join(Curpath, ".oauth2_token"))
+        os.remove(os.path.join(RAM_storage_path, ".oauth2_token"))
     except Exception:
         pass
     try:
         os.remove(os.path.join(Curpath, "CommunicationFlag.txt"))
+        os.remove(os.path.join(RAM_storage_path, "CommunicationFlag.txt"))
     except Exception:
         pass
 
@@ -60,6 +63,7 @@ if __name__ == '__main__':
         os.path.join(Curpath, 'ActuatorControl.py'),
         os.path.join(Curpath, 'DatabaseWrite.py')
     ]
+
     numProcesses = len(processes)
 
     print("Starting root process: ")

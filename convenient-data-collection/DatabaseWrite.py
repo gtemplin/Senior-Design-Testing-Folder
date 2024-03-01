@@ -14,7 +14,9 @@ print("Starting DatabaseWrite.py", flush=True)
 Curpath = os.getenv('CURPATH', '/usr/src/app')
 print(f'Current path for DatabaseWrite.py: {Curpath}', flush=True)
 
-debug = True
+RAM_storage_path = '/tmp/convenient-data-collection'
+
+debug = False
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -24,7 +26,7 @@ def send_to_database(address, msg):
     try:
         if msg!='':
             url=address.format(msg[0: 1], msg[2:])
-            print(url, flush=True)
+            #print(url, flush=True)
             loop = asyncio.get_event_loop()
             return loop.run_until_complete(sendData(url))
     except ConnectionError as c:
@@ -106,8 +108,8 @@ if not os.path.isfile(backup_file_path):
 # If either of the flags are set, store the data from the file associated with it, then clear that file so that it can be used again later. 
 # Once it sees that a flag is set for communication, it formats it and sends it to the database 
 while True:
-    communication_flag_path = os.path.join(Curpath, "CommunicationFlag.txt")
-    communication_flag_actuator_path = os.path.join(Curpath, "CommunicationFlagActuator.txt")
+    communication_flag_path = os.path.join(RAM_storage_path, "CommunicationFlag.txt") # fixthis should be going to RAM not disk. Maybe ask Chien if this is what it's supposed
+    communication_flag_actuator_path = os.path.join(RAM_storage_path, "CommunicationFlagActuator.txt")
 
     # Create fresh files to send, and reset flags 
     if os.path.isfile(communication_flag_path) or os.path.isfile(communication_flag_actuator_path):
@@ -118,7 +120,7 @@ while True:
             except Exception:
                 print("CommunicationFlag is not deleted", flush=True)
                 pass
-            formatted_system_data_path = os.path.join(Curpath, "FormattedSystemData.txt")
+            formatted_system_data_path = os.path.join(RAM_storage_path, "FormattedSystemData.txt")
             with open(formatted_system_data_path, "r+") as file:
                 fileContents = file.read()
                 file.seek(0)  # Move to the start of the file before truncating
@@ -131,7 +133,7 @@ while True:
             except Exception:
                 print("CommunicationFlagActuator is not deleted", flush=True)
                 pass
-            formatted_system_data_actuator_path = os.path.join(Curpath, "FormattedSystemDataActuator.txt")
+            formatted_system_data_actuator_path = os.path.join(RAM_storage_path, "FormattedSystemDataActuator.txt")
             with open(formatted_system_data_actuator_path, "r+") as file2:
                 fileContentsActuator = file2.read()
                 file2.seek(0)  # Move to the start of the file before truncating

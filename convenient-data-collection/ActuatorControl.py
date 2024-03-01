@@ -9,19 +9,19 @@ import urllib3
 #import RaspberryPieIpAddressMonitor as rp
 
 print("Starting ActuatorControl.py", flush=True)
-fp = open('Actuator.txt', 'x')
-fp.close()
-print("Test output", flush=True)
+# fp = open('Actuator.txt', 'x')
+# fp.close()
+# print("Test output", flush=True)
 
 Curpath = os.getenv('CURPATH', '/usr/src/app')
 print(f'Current path for ActuatorControl.py: {Curpath}', flush=True)
 
-text_files_folder_path = os.path.join(Curpath, "TextFiles")
+RAM_storage_path = '/tmp/convenient-data-collection'
+
+text_files_folder_path = RAM_storage_path # os.path.join(Curpath, "TextFiles")
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 lastActuatorSyncTime=time.time()
-
-print("Time + warnings disabled")
 
 def read_request_from_database(address, msg_id):
     try:
