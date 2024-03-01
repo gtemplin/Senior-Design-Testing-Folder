@@ -25,5 +25,6 @@ Find a way for us to remotely monitor the historical values.
 - Show the system writing to the database and toggling actuators (ask Liya about this Monday)
 - Make sure that commonly created/deleted files (flag .txt files) aren't written to SD card, and are stored in RAM (Grant)
 - Remote operation? I am not quite sure what he means by this. From Chien: **"The Raspberry Pi will be installed remotely in real applications. We need to be able to operate it remotely through the internet. We cannot use the default port provided by the home assistant. How to ensure the access is secure (like needing a password on the edge computer)"**
+- See about changing any commonly created text files to go to the /tmp directory instead, which will ensure that nothing is written to the SD card. Make this the volume location. (Grant) 
   
 
