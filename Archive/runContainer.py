@@ -1,28 +1,12 @@
-import subprocess 
 import os
 import sys
-
-spacesize = 1
-
-# Input a shell command, and 'yes' if you want to see the output 
-def runCommand(command, printOutput=None):
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    if result.returncode != 0:
-        print("Error:\n", result.stderr)
-    if printOutput is not None:
-        print("Output:\n", result.stdout)
-    return result.stdout
+import helpers 
 
 
-def spacing(num_spaces):
-    for s in range(num_spaces):
-        print("\n")
-
-
-# need to get home assistant domain name and port number 
+spacesize = 2
 
 # make sure docker is installed
-docker_status = runCommand("docker --version")
+docker_status = helpers.runCommand("docker --version")
 docker_status = docker_status.split()
 if docker_status[0] == "Docker" and docker_status[1] == "version":
     pass
@@ -33,8 +17,8 @@ else:
 
 
 print("Your PWD and it's subdirectories:")
-runCommand("pwd", "yes")
-runCommand("ls", "yes")
+helpers.runCommand("pwd", "yes")
+helpers.runCommand("ls", "yes")
 
 
 while True: 
@@ -51,10 +35,10 @@ while True:
     else:
         print("That directory doesn't exist.")
 
-spacing(spacesize)
+helpers.spacing(spacesize)
 
 # Show the user all of the currently existing networks 
-networks = runCommand("docker network ls")
+networks = helpers.runCommand("docker network ls")
 network_list = networks.split("\n")
 network_names = ["Existing Network Names:"]
 for item in network_list[1:]:
@@ -64,7 +48,7 @@ for item in network_list[1:]:
 for network in network_names:
     print(network)
 
-spacing(spacesize)
+helpers.spacing(spacesize)
 
 # Get user network input
 while True:
@@ -78,17 +62,17 @@ while True:
     else:
         print(network + " is not an existing network")
 
-spacing(spacesize)
+helpers.spacing(spacesize)
 
 # Get the image
 print("Note: spaces will be converted to dashes")
 container_name = input("Enter the container name: ")
 container_name = container_name.replace(" ", "-")
 
-spacing(spacesize)
+helpers.spacing(spacesize)
 
 # Show the user all of the currently existing images 
-images = runCommand("docker images")
+images = helpers.runCommand("docker images")
 image_list = images.split("\n")
 image_names = []
 image_tags = []
@@ -125,7 +109,7 @@ while True:
     else:
         print(tag + " is not a tag for your image")
 
-spacing(spacesize + 1)
+helpers.spacing(spacesize + 1)
 print("Generating the run command: ")
 
 # Generate the run command

@@ -15,9 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Declare the BackupData directory as a volume
-VOLUME /usr/src/app/BackupData
+# VOLUME /usr/src/app/BackupData
 
 # Start running the root process 
-CMD ["python", "./RootProcess.py"]
+CMD ["python3", "RootProcess.py"]
 
-# python 

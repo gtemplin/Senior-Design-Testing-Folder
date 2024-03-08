@@ -6,19 +6,24 @@ import time
 # import openhab.oauth2_helper
 import requests
 import urllib3
-import RaspberryPieIpAddressMonitor as rp
+#import RaspberryPieIpAddressMonitor as rp
+
+print("Starting ActuatorControl.py", flush=True)
+# fp = open('Actuator.txt', 'x')
+# fp.close()
+# print("Test output", flush=True)
 
 Curpath = os.getenv('CURPATH', '/usr/src/app')
-print(f'Current path for ActuatorControl.py: {Curpath}')
+print(f'Current path for ActuatorControl.py: {Curpath}', flush=True)
 
-text_files_folder_path = os.path.join(Curpath, "TextFiles")
+RAM_storage_path = '/tmp/convenient-data-collection'
 
+text_files_folder_path = RAM_storage_path # os.path.join(Curpath, "TextFiles")
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 lastActuatorSyncTime=time.time()
 
 def read_request_from_database(address, msg_id):
-
     try:
         response = requests.get(address.format(msg_id, "x"), verify=False)
         if response.ok:
@@ -26,7 +31,7 @@ def read_request_from_database(address, msg_id):
             if responseCleaned != "" and response.text is not None:
                 actuatorRequest = [json.loads(idx.replace("'", '"')) for idx in [responseCleaned]]
                 if actuatorRequest[0] !=[]:
-                    print(actuatorRequest[0])
+                    print(actuatorRequest[0], flush=True)
                 return actuatorRequest[0]
             else:
                 return []
@@ -52,7 +57,7 @@ def msg_to_file(file_name, message):
 
 
 def SendUpdatedCommad(command,associated_raspi ):
-    print('Sending updated command to DB')
+    print('Sending updated command to DB', flush=True)
     message=pack_sensor_data_msg_5(config['PCName'],command["NodeName"], command["PortName"],command["CommandValue"], command["ID"],'DONE' if CheckCommandExecution(command,associated_raspi) else 'FAILED')
     return message
 
@@ -72,7 +77,7 @@ def AcknowledgeCommand(command):
         actuator = next((unit for unit in config["SwitchingPorts"] if unit["NodeName"] ==  command["NodeName"]), None)
         associated_raspi = next((unit for unit in config["RaspberryPiUnits"] if unit["UnitName"] == actuator["AssociatedRaspberryPiUnit"]), None)
         if associated_raspi is  None:
-            print("Error: No associated raspi found for sensor: " + command["NodeName"] + " " + command["PortName"])
+            print("Error: No associated raspi found for sensor: " + command["NodeName"] + " " + command["PortName"], flush=True)
             continue
 
     msg=msg+SendUpdatedCommad(command,associated_raspi )
@@ -93,14 +98,15 @@ def CheckCommandExecution(command,associated_raspi, RetryCount=0):
         .replace("<portHomeAssist>",associated_raspi["portHomeAssist"]) \
         .replace("<entity_id>",label)
     response=requests.get(url, headers=associated_raspi["headers"])
-    print(label)
+    print(label, flush=True)
+    print(response, flush=True)
     if response.status_code==200:
         state=response.json()['state']
         stateEncoded=1 if state=="on" else 0
         if command["CommandValue"] == stateEncoded.__str__():
             return True
     elif RetryCount<1 and not (response.ok):
-        rp.UpdateIPAddressForRaspberryPie(associated_raspi)
+        #rp.UpdateIPAddressForRaspberryPie(associated_raspi)
         return CheckCommandExecution(command,associated_raspi,RetryCount+1)
     return False
 
@@ -120,14 +126,14 @@ def ExecuteRequestCommand(entity_id,command,associated_raspi, RetryCount=0):
     response = requests.post(urlExecute, headers=associated_raspi["headers"], data=json.dumps(payload))
 
     if response.status_code == 200:
-        print(f"Switch {entity_id} successfully turned {'on' if turn_on else 'off'}")
+        print(f"Switch {entity_id} successfully turned {'on' if turn_on else 'off'}", flush=True)
         return
     elif RetryCount<1 and not (response.ok):
-        rp.UpdateIPAddressForRaspberryPie(associated_raspi)
+        #rp.UpdateIPAddressForRaspberryPie(associated_raspi)
         ExecuteRequestCommand(entity_id,command,associated_raspi,RetryCount+1)
         return
     else:
-        print(f"Failed to toggle switch {entity_id}. Error: {response.text}")
+        print(f"Failed to toggle switch {entity_id}. Error: {response.text}", flush=True)
         return
 
 
@@ -143,33 +149,33 @@ def GenerateLabelForActuator(command):
 js = os.path.join(Curpath, "ConfigurationFiles", "configCustomer.json")
 config = json_to_dict(js)
 webserver_address = config['WebserverAddress']
-rp.RefreshIPAddressForRaspberryPiUnitsBulk(config["RaspberryPiUnits"])
+#rp.RefreshIPAddressForRaspberryPiUnitsBulk(config["RaspberryPiUnits"])
 
+print("Finished setup")
 
 try:
     while True:
         actuator_requests = read_request_from_database(webserver_address, "4")
+        #actuator_requests = []
         if actuator_requests!= []:
-            rp.RefreshIPAddressForRaspberryPiUnitsBulk(config["RaspberryPiUnits"])
+            #rp.RefreshIPAddressForRaspberryPiUnitsBulk(config["RaspberryPiUnits"])
             for command in actuator_requests:
                 command['UpdatedCommand']=""
                 label=GenerateLabelForActuator(command)
                 actuator = next((unit for unit in config["SwitchingPorts"] if unit["NodeName"] ==  command["NodeName"]), None)
                 associated_raspi = next((unit for unit in config["RaspberryPiUnits"] if unit["UnitName"] == actuator["AssociatedRaspberryPiUnit"]), None)
                 print(associated_raspi)
-                if associated_raspi is  None:
-                    print("Error: No associated raspi found for sensor: " + command["NodeName"] + " " + command["PortName"])
+                if associated_raspi is None:
+                    print("Error: No associated raspi found for sensor: " + command["NodeName"] + " " + command["PortName"], flush=True)
                     continue
                 ExecuteRequestCommand(label,command,associated_raspi)
             AcknowledgeCommand(actuator_requests)
 
 
-
 except Exception as e:
-    print('------------------------------------------------------------------------------------------------')
-    print('Error in Actuator.py')
-    print(e)
-    print(e.__str__())
-    print('-----------------------------------------------------------------------------------------------')
-    exit(0)
-    pass
+    print('------------------------------------------------------------------------------------------------', flush=True)
+    print('Error in ActuatorControl.py', flush=True)
+    print(e, flush=True)
+    print(e.__str__(), flush=True)
+    print('-----------------------------------------------------------------------------------------------', flush=True)
+    exit(1)

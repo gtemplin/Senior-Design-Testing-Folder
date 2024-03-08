@@ -11,6 +11,9 @@ import urllib3
 Curpath = os.getenv('CURPATH', '/usr/src/app')
 print(f'Current path for RaspberryPieAddressMonitor.py: {Curpath}')
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
 def json_to_dict(filename):
     fp = open(filename, 'r')
     data = json.load(fp)
