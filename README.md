@@ -1,7 +1,7 @@
 # Senior-Design-Testing-Folder
 ### Raspberry Pi SSH Login
 - admin@134.68.225.201
-- password = adminpassword
+- password = admin
 
 ### Raspberry Pi Directory Structure 
 - Everything will be based in the admin's home directory (just input 'cd' to get here once logged in)
