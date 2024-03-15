@@ -133,9 +133,9 @@ def createMessage():
 if __name__ == "__main__":
     print("Starting prolonged test")
     atexit.register(save_to_disk) # call the save to disk function when finished 
-    delayBetweenReads = 1 # seconds between each writing 
-    totalLogsDesired = 20 # how many logs 
-    diskWriteFrequency = 10 # how many logs in between saving to the disk 
+    delayBetweenReads = 10 # seconds between each writing 
+    totalLogsDesired = 100 # how many logs 
+    diskWriteFrequency = 50 # how many logs in between saving to the disk 
 
     logCount = 0
     while True:
