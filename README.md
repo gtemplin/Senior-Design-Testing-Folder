@@ -3,6 +3,10 @@
 - admin@134.68.225.201
 - password = admin
 
+### Some Docker Notes
+- Docker initially requires sudo access
+- To allow a user to run docker commands w/o sudo: sudo usermod -aG docker username
+
 ### Raspberry Pi Directory Structure 
 - Everything will be based in the admin's home directory (just input 'cd' to get here once logged in)
 
