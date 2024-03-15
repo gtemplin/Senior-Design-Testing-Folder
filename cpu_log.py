@@ -151,5 +151,6 @@ if __name__ == "__main__":
         time.sleep(delayBetweenReads) # wait for a bit to not overload the RAM/disk 
 
 
+# If just using the functions 
 else:
     print("Imported cpu_log")

@@ -3,7 +3,7 @@
 # Home Assistant API endpoint for getting the configuration
 #HA_ENDPOINT="http://homeassistant.local:8123/api/config"
 #HA_ENDPOINT="http://134.68.225.201:8123/api/config"
-HA_ENDPOINT="http://localhost:8123/api/config"
+HA_ENDPOINT="http://localhost:8123/api/config" # can use localhost, which will work regardless of internet connection 
 
 # Your Long-Lived Access Token
 ACCESS_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI5ZTQyN2FkMWM0Zjc0ODVlYWY0NDQyMGQxOGZlNTU5YiIsImlhdCI6MTcxMDUyNTg4NCwiZXhwIjoyMDI1ODg1ODg0fQ.2r0fsMJor0xTm0rleNAi1A-JvtDhIOmiG_5lCdqElmY"
