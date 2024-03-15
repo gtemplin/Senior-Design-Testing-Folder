@@ -2,6 +2,8 @@
 ### Raspberry Pi SSH Login
 - admin@134.68.225.201
 - password = admin
+- On windows powershell, use this command to reset the host ssh connection: ssh-keygen -R 134.68.225.201
+
 
 ### Some Docker Notes
 - Docker initially requires sudo access
