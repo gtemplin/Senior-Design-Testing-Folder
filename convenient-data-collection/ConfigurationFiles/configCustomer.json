@@ -30,7 +30,7 @@
     {
       "NodeName": "znode_101",
       "SensorPortLabel": "D-Current101: 0-100A",
-      "PortType": "sensor",
+      "PortType": "Sensing",
       "PortName": "electric_consumption_a_2",
       "SensorType": "Current",
       "InputValueUnitName": "Ampere",
@@ -55,7 +55,7 @@
     {
       "NodeName": "snode101",
       "SensorPortLabel": "A-Pressure101: 0-500psig",
-      "PortType": "sensor",
+      "PortType": "Sensing",
       "PortName": "voltage_3",
       "SensorType": "Pressure",
       "InputValueUnitName": "psig",
@@ -80,7 +80,7 @@
     {
       "NodeName": "snode_102",
       "SensorPortLabel": "D-Temp101:-40-80C",
-      "PortType": "sensor",
+      "PortType": "Sensing",
       "PortName": "air_temperature_8",
       "SensorType": "Temperature",
       "InputValueUnitName": "Celsius",
@@ -105,7 +105,7 @@
     {
       "NodeName": "snode_102",
       "SensorPortLabel": "D-Humidity101: 0-100RHS",
-      "PortType": "sensor",
+      "PortType": "Sensing",
       "PortName": "humidity_9",
       "SensorType": "Humidity",
       "InputValueUnitName": "Percent",
@@ -130,7 +130,7 @@
     {
       "NodeName": "snode_102",
       "SensorPortLabel": "A-CO2101: 0-100A",
-      "PortType": "sensor",
+      "PortType": "Sensing",
       "PortName": "voltage_3",
       "SensorType": "CO2",
       "InputValueUnitName": "part per million",
@@ -155,7 +155,7 @@
     {
       "NodeName": "snode_102",
       "SensorPortLabel": "A-ADPressure102: 15-25psig",
-      "PortType": "sensor",
+      "PortType": "Sensing",
       "PortName": "voltage_4",
       "SensorType": "Pressure",
       "InputValueUnitName": "psig",
@@ -180,7 +180,7 @@
     {
       "NodeName": "snode_103",
       "SensorPortLabel": "D-Temp102: -67-257F",
-      "PortType": "sensor",
+      "PortType": "Sensing",
       "PortName": "air_temperature_8",
       "SensorType": "Tempearture",
       "InputValueUnitName": "Fahrenheit",
@@ -205,7 +205,7 @@
     {
       "NodeName": "znode_101",
       "SensorPortLabel": "D-Current102: 0-100A",
-      "PortType": "sensor",
+      "PortType": "Sensing",
       "PortName": "electric_consumption_a_2_2",
       "SensorType": "Current",
       "InputValueUnitName": "Ampere",
@@ -230,7 +230,7 @@
     {
       "NodeName": "snode_103",
       "SensorPortLabel": "A-Pressure103: 15-1000psi",
-      "PortType": "sensor",
+      "PortType": "Sensing",
       "PortName": "voltage_3",
       "SensorType": "Pressure",
       "InputValueUnitName": "psi",
@@ -256,8 +256,8 @@
   "SwitchingPorts": [
     {
       "NodeName": "actuator_101",
-      "PortType": "switch",
-      "PortName": "",
+      "PortType": "Switch",
+      "PortName": "Switch",
       "PortLabel": "ZwaveZwitch_01",
       "PollingIntervalInSeconds": 60,
       "AttachedToEquipment": "Pressure Valve",
@@ -275,8 +275,8 @@
     },
     {
       "NodeName": "actuator_102",
-      "PortType": "switch",
-      "PortName": "",
+      "PortType": "Switch",
+      "PortName": "Switch",
       "PortLabel": "ZwaveZwitch_02",
       "PollingIntervalInSeconds": 60,
       "AttachedToEquipment": "Air Compressor",
@@ -294,8 +294,8 @@
     },
     {
       "NodeName": "actuator_103",
-      "PortType": "switch",
-      "PortName": "",
+      "PortType": "Switch",
+      "PortName": "Switch",
       "PortLabel": "ZwaveZwitch_03",
       "PollingIntervalInSeconds": 60,
       "AttachedToEquipment": "Room Heater",
@@ -313,8 +313,8 @@
     },
     {
       "NodeName": "actuator_104",
-      "PortType": "switch",
-      "PortName": "",
+      "PortType": "Switch",
+      "PortName": "Switch",
       "PortLabel": "ZwaveZwitch_04",
       "PollingIntervalInSeconds": 60,
       "AttachedToEquipment": "Water Pump",
@@ -332,8 +332,8 @@
     },
     {
       "NodeName": "actuator_105",
-      "PortType": "switch",
-      "PortName": "",
+      "PortType": "Switch",
+      "PortName": "Switch",
       "PortLabel": "ZwaveZwitch_05",
       "PollingIntervalInSeconds": 60,
       "AttachedToEquipment": "Water Pressure Valve",
@@ -351,8 +351,8 @@
       },
     {
       "NodeName": "actuator_106",
-      "PortType": "switch",
-      "PortName": "",
+      "PortType": "Switch",
+      "PortName": "Switch",
       "PortLabel": "ZwaveZwitch_06",
       "PollingIntervalInSeconds": 60,
       "AttachedToEquipment": "Water Tank",
