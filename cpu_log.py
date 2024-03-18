@@ -5,7 +5,7 @@ import atexit
 import time
 import csv 
 
-#container_to_stop = 
+container_to_stop = "test"  # stop the container in emergency case  
 
 # Disk storage logs. Don't want to use these for frequent writes, only intermittently 
 SD_card_path = '/home/admin/SeniorDesign/Senior-Design-Testing-Folder/performance_logs.csv'
@@ -65,8 +65,17 @@ def temperatureSafetyCheck():
         current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         message = f"Stopped program at {current_datetime} due to overheating"
         ram_log(message)
-        # stop the python program docker container fixthis
-        exit(1) 
+	# stop the test container 
+        import subprocess
+	command = ['docker', 'stop', container_to_stop]
+	result = subprocess.run(command, capture_output=True, text=True)
+	if result.returncode == 0:
+    		print(f"Container {container_name} stopped successfully.")
+    		print(result.stdout)
+	else:
+    		print(f"Failed to stop container {container_name}.")
+    		print(result.stderr) 
+	exit(1) 
 
 
 # This returns the percentage of the total RAM that is free to do work
@@ -133,9 +142,9 @@ def createMessage():
 if __name__ == "__main__":
     print("Starting prolonged test")
     atexit.register(save_to_disk) # call the save to disk function when finished 
-    delayBetweenReads = 10 # seconds between each writing 
-    totalLogsDesired = 100 # how many logs 
-    diskWriteFrequency = 50 # how many logs in between saving to the disk 
+    delayBetweenReads = 1 # seconds between each writing 
+    totalLogsDesired = 50 # how many logs 
+    diskWriteFrequency = 25 # how many logs in between saving to the disk 
 
     logCount = 0
     while True:
