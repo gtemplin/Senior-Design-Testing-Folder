@@ -10,6 +10,7 @@
 - To allow a user to run docker commands w/o sudo: sudo usermod -aG docker username
 - Home assistant is on the host network, so can make http requests to http://localhost:8123
 - Should be able to set the IP address just to 'localhost'
+- /etc/systemd/resolved.conf needs to have 'NS=8.8.8.8 8.8.4.4' added to it in order to use the ping command 
 
 ### Raspberry Pi Directory Structure 
 - Everything will be based in the admin's home directory (just input 'cd' to get here once logged in)
