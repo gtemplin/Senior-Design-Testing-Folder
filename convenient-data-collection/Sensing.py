@@ -348,6 +348,7 @@ def Prepare_and_Send_Message3(systemData):
 # return: current value of the sensor device
 # status: complete
 def read_sensor_data(sensor_id,associated_raspi,RetryCount=0):
+    print("read_sensor_data", flush=True)
     try:
         url=systemData["UrlFetchSensorDataAndStatus"] \
             .replace("<ip_address_homeAssist>",associated_raspi["ip_address_homeAssist"]) \
@@ -386,11 +387,12 @@ def read_sensor_data(sensor_id,associated_raspi,RetryCount=0):
 # return: sensor data
 # status: complete
 def Read_All_Sensor_Data(systemData):
+    print("Read_All_Sensor_Data", flush=True)
     SensorDataStatus=[]
     for sensor in systemData["SensingPorts"]:
         if update_time_flag(sensor["PreviousSampleTime"],
                             sensor['PollingIntervalInSeconds']):
-            label =sensor["PortType"]+'.'+sensor["NodeName"].replace('-','') + "_" + sensor["PortName"]
+            label =sensor["PortType"]+'.'+sensor["NodeName"].replace('-','') #+ "_" + sensor["PortName"]
             print(label, flush=True)
             value=0
             associated_raspi = next((unit for unit in systemData["RaspberryPiUnits"] if unit["UnitName"] == sensor["AssociatedRaspberryPiUnit"]), None)

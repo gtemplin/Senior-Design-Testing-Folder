@@ -28,10 +28,10 @@
   ],
   "SensingPorts": [
     {
-      "NodeName": "znode_101",
+      "NodeName": "multisensor_6_air_temperature",
       "SensorPortLabel": "D-Current101: 0-100A",
       "PortType": "sensor",
-      "PortName": "electric_consumption_a_2",
+      "PortName": "multisensor_6_air_temperature",
       "SensorType": "Current",
       "InputValueUnitName": "Ampere",
       "InputValueUnitSymbol": "A",
@@ -53,10 +53,10 @@
       "IsDataReadyToSent": 0
     },
     {
-      "NodeName": "snode101",
+      "NodeName": "multisensor_6_humidity",
       "SensorPortLabel": "A-Pressure101: 0-500psig",
       "PortType": "sensor",
-      "PortName": "voltage_3",
+      "PortName": "multisensor_6_humidity",
       "SensorType": "Pressure",
       "InputValueUnitName": "psig",
       "InputValueUnitSymbol": "psig",
@@ -78,10 +78,10 @@
       "IsDataReadyToSent": 0
     },
     {
-      "NodeName": "snode_102",
+      "NodeName": "multisensor_6_illuminance",
       "SensorPortLabel": "D-Temp101:-40-80C",
       "PortType": "sensor",
-      "PortName": "air_temperature_8",
+      "PortName": "multisensor_6_illuminance",
       "SensorType": "Temperature",
       "InputValueUnitName": "Celsius",
       "InputValueUnitSymbol": "C",
@@ -106,7 +106,7 @@
       "NodeName": "snode_102",
       "SensorPortLabel": "D-Humidity101: 0-100RHS",
       "PortType": "sensor",
-      "PortName": "humidity_9",
+      "PortName": "multisensor_6_ultraviolet",
       "SensorType": "Humidity",
       "InputValueUnitName": "Percent",
       "InputValueUnitSymbol": "%",
