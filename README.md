@@ -18,6 +18,7 @@
 
 ### Successful HASAPI http request:
 - http://localhost:8123/api/states/sensor.multisensor_6_air_temperature
+- <entity_id> = sensor.multisensor_6_air_temperature
 - This is for a sensor not an actuator
 
 ### Home Assistant API Token:
