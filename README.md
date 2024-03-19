@@ -3,6 +3,7 @@
 - admin@134.68.225.201
 - password = admin
 - On windows powershell, use this command to reset the host ssh connection: ssh-keygen -R 134.68.225.201
+- https://www.raspberrypi-spy.co.uk/2014/08/how-to-reset-a-forgotten-raspberry-pi-password/ <-- how to fix pi password error by fucking w/ the SD card
 
 
 ### Some Docker Notes
