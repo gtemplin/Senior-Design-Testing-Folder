@@ -39,7 +39,6 @@ def ram_log(message):
         writer.writerow(message)  
 ram_log(["Datetime","Temperature","Memory Free %","CPU Utilization %"]) # Generate CSV Title 
 
-
 # Function to save the RAM stored file to the SD card (disk storage)
 def save_to_disk():
     # Ensure the directory exists
@@ -58,6 +57,7 @@ def save_to_disk():
                 print(row)
                 disk_writer.writerow(row)
         os.remove(RAM_storage_path)  # Clean up the RAM disk file
+save_to_disk() 
 
 
 # Returns the CPU temp in deg celcius 
@@ -161,9 +161,9 @@ def createMessage():
 if __name__ == "__main__":
     print("Starting prolonged test")
     atexit.register(save_to_disk) # call the save to disk function when finished 
-    delayBetweenReads = 1/5 # seconds between each writing 
+    delayBetweenReads = 15 # seconds between each writing 
     totalLogsDesired = 500 # how many logs 
-    diskWriteFrequency = 100 # how many logs in between saving to the disk 
+    diskWriteFrequency = 50 # how many logs in between saving to the disk 
 
     logCount = 0
     while True:
