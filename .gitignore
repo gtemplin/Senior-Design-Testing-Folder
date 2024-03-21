@@ -1,4 +1,5 @@
 convenient-data-collection/cleaned
 local-volume/overnightlog.txt
 *.pyc
+*.out
 
