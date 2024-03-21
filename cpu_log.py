@@ -7,26 +7,43 @@ import csv
 
 container_to_stop = "test"  # stop the container in emergency case  
 
+starting_datetime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+main_directory = "/home/admin/Senior-Design-Testing-Folder"
+if os.path.exists(main_directory):
+    print("Path exists")
+
 # Disk storage logs. Don't want to use these for frequent writes, only intermittently 
-SD_card_path = '/home/admin/SeniorDesign/Senior-Design-Testing-Folder/performance_logs.csv'
+SD_card_path = f'/home/admin/Senior-Design-Testing-Folder/performance_logs/{starting_datetime}.csv'
+
 if os.path.exists(SD_card_path):
-        os.remove(SD_card_path)
+    os.remove(SD_card_path)
+    print("Removed SD Card Log")
+else:
+    print("Was no SD Card Log")
+
 
 # Frequently written to 
-RAM_storage_path = '/dev/shm/temp_performance_logs.csv'
+RAM_storage_path = f'/dev/shm/temp_performance_logs_{starting_datetime}.csv'
 if os.path.exists(RAM_storage_path):
-        os.remove(RAM_storage_path)
+    os.remove(RAM_storage_path)
+    print("Removed Temp RAM Log")
+else: 
+    print("Was no RAM Log ")
+
 
 # Write to the CSV file stored in RAM 
 def ram_log(message):
     with open(RAM_storage_path, 'a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(message)
-    
+        writer.writerow(message)  
 ram_log(["Datetime","Temperature","Memory Free %","CPU Utilization %"]) # Generate CSV Title 
+
 
 # Function to save the RAM stored file to the SD card (disk storage)
 def save_to_disk():
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(SD_card_path), exist_ok=True)
     # Check if the RAM disk file exists and is not empty
     if os.path.exists(RAM_storage_path) and os.path.getsize(RAM_storage_path) > 0:
         # Get the data from the ram file and store it in a list 
@@ -35,11 +52,13 @@ def save_to_disk():
             data = list(ram_reader)
         # Write the list to the SD card 
         with open(SD_card_path, 'a') as disk_file:
+            print(f"Writing to SD card: {SD_card_path}")
             disk_writer = csv.writer(disk_file)
             for row in data:
+                print(row)
                 disk_writer.writerow(row)
-
         os.remove(RAM_storage_path)  # Clean up the RAM disk file
+
 
 # Returns the CPU temp in deg celcius 
 def get_cpu_temperature():
@@ -67,15 +86,15 @@ def temperatureSafetyCheck():
         ram_log(message)
 	# stop the test container 
         import subprocess
-	command = ['docker', 'stop', container_to_stop]
-	result = subprocess.run(command, capture_output=True, text=True)
-	if result.returncode == 0:
-    		print(f"Container {container_name} stopped successfully.")
-    		print(result.stdout)
-	else:
-    		print(f"Failed to stop container {container_name}.")
-    		print(result.stderr) 
-	exit(1) 
+        command = ['docker', 'stop', container_to_stop]
+        result = subprocess.run(command, capture_output=True, text=True)
+    if result.returncode == 0:
+        print(f"Container {container_to_stop} stopped successfully.")
+        print(result.stdout)
+    else:
+        print(f"Failed to stop container {container_to_stop}.")
+        print(result.stderr) 
+    exit(1) 
 
 
 # This returns the percentage of the total RAM that is free to do work
@@ -142,9 +161,9 @@ def createMessage():
 if __name__ == "__main__":
     print("Starting prolonged test")
     atexit.register(save_to_disk) # call the save to disk function when finished 
-    delayBetweenReads = 1 # seconds between each writing 
-    totalLogsDesired = 50 # how many logs 
-    diskWriteFrequency = 25 # how many logs in between saving to the disk 
+    delayBetweenReads = 1/5 # seconds between each writing 
+    totalLogsDesired = 500 # how many logs 
+    diskWriteFrequency = 100 # how many logs in between saving to the disk 
 
     logCount = 0
     while True:
@@ -154,7 +173,7 @@ if __name__ == "__main__":
         else:
             save_to_disk() # every 250 logs, save to the disk and flush out the RAM storage 
         if logCount >= totalLogsDesired:
-            ram_log(["Exited with code 0"])
+            ram_log(["Exited", "with", "code", "0"])
             exit(0) # indicates the test ran successfully after some number of readings 
         print(f"Log {logCount}")
         time.sleep(delayBetweenReads) # wait for a bit to not overload the RAM/disk 

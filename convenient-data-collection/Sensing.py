@@ -342,44 +342,70 @@ def Prepare_and_Send_Message3(systemData):
 
 
 
-############################################################
-# purpose: collect data from sensors
-# parameters: name of the node that the device is connected to, ID of the sensing device, z-wave network
-# return: current value of the sensor device
-# status: complete
-def read_sensor_data(sensor_id,associated_raspi,RetryCount=0):
-    print("read_sensor_data", flush=True)
-    try:
-        url=systemData["UrlFetchSensorDataAndStatus"] \
-            .replace("<ip_address_homeAssist>",associated_raspi["ip_address_homeAssist"]) \
-            .replace("<portHomeAssist>",associated_raspi["portHomeAssist"]) \
-            .replace("<entity_id>",sensor_id)
-        response=requests.get(url, headers=associated_raspi["headers"]) #tag
-        print(f"URL used: {url}", flush=True)
-        print(f"Read sensor response: {response}", flush=True)
 
-        if response.status_code==200:
-           currentValue=response.json()['state']
-           if str(currentValue).lower() =="off":
-              return 0
-           if str(currentValue).lower() =="on":
-              return 1
-           currentValue = re.sub("[^0-9^.]", "", str(currentValue))
-           currentValue = (0.00 if currentValue == "" else float(currentValue))
-           return currentValue
+############################################################
+def Prepare_and_Send_Message2(systemData, previous_database_send_time):
+    if update_time_flag(previous_database_send_time, int(systemData["DatabaseSendIntervalInSeconds"])):
+        packed_msg_processed=""
+        for sensor in systemData["SensingPorts"]:
+            if(sensor["IsDataReadyToSent"]==1):
+                packed_msg = pack_sensor_data_msg_2_v3(systemData["PCName"],
+                                                       sensor["NodeName"],
+                                                       sensor["PortName"],
+                                                       sensor["ProcessedValue"])
+
+                packed_msg_processed=packed_msg_processed+packed_msg
+                sensor["ProcessedValue"] = 0
+                sensor["IsDataReadyToSent"] = 0
+        if( packed_msg_processed!=""):
+            packed_msg_processed='2|' + packed_msg_processed
+            msg_to_file(os.path.join(text_file_path, "FormattedSystemData.txt"), packed_msg_processed)
+            ff = open(os.path.join(text_file_path, "CommunicationFlag.txt"), "w+")
+            ff.close()
+        if ConvertToBoolean(flag['msg_to_file_debug_flag']):
+            print(packed_msg_processed)
+            print('*****************************************************************************************')
+        previous_database_send_time = time.time()
+    return systemData, previous_database_send_time
+
+#############################$$$$$$$$$$ Network Integraty Check ########################################
+
+
+
+
+
+###############################################################################
+
+
+###########################################################
+# purpose: checks if a node is alive
+# parameters: nodeid
+# return: True, if  node is alive else False
+# status: complete,
+
+def CheckNodeStatus(nodename, associated_raspi, RetryCount=0):
+    nodeStatuslabel='sensor.'+nodename.replace('-','')+'_node_status'
+    url=systemData["UrlFetchSensorDataAndStatus"] \
+        .replace("<ip_address_homeAssist>",associated_raspi["ip_address_homeAssist"]) \
+        .replace("<portHomeAssist>",associated_raspi["portHomeAssist"]) \
+        .replace("<entity_id>",nodeStatuslabel) #tag
+    print(url, flush=True)
+    print(nodeStatuslabel, flush=True)
+    print("Inside checkNodeStatus", flush=True)
+    try:
+        response=requests.get(url, headers=associated_raspi["headers"])
+        print(response.status_code, flush=True)
+        if(response.status_code==200):
+            status=response.json()['state']
+            print(f"Status of {nodename}: {status}", flush=True)
+            if(status in ('alive','asleep')):
+                return True
         elif RetryCount<1 and not (response.ok):
             #rp.UpdateIPAddressForRaspberryPie(associated_raspi)
-            return read_sensor_data(sensor_id,associated_raspi,RetryCount+1)
-        return 0.00
-
-    except Exception as e:
-        print('WARNING!!!!!!!!!!!!!!!!!' + sensor_id + ' NOT FOUND/ NOT AVAILABLE\n\n\n -----------------\n\n', flush=True)
-        currentValue=0.00
-        print(e, flush=True)
-        print('\n ***************************************************************************************************** \n ', flush=True)
-    return currentValue
-
-
+            return CheckNodeStatus(nodename, associated_raspi,RetryCount+1)
+        return False
+    except:
+       return False
 
 ############################################################
 # purpose: read all sensor data based on each of their sampling inervals
@@ -387,12 +413,11 @@ def read_sensor_data(sensor_id,associated_raspi,RetryCount=0):
 # return: sensor data
 # status: complete
 def Read_All_Sensor_Data(systemData):
-    print("Read_All_Sensor_Data", flush=True)
     SensorDataStatus=[]
     for sensor in systemData["SensingPorts"]:
         if update_time_flag(sensor["PreviousSampleTime"],
                             sensor['PollingIntervalInSeconds']):
-            label =sensor["PortType"]+'.'+sensor["NodeName"].replace('-','') #+ "_" + sensor["PortName"]
+            label =sensor["PortType"]+'.'+sensor["NodeName"].replace('-','') + "_" + sensor["PortName"]
             print(label, flush=True)
             value=0
             associated_raspi = next((unit for unit in systemData["RaspberryPiUnits"] if unit["UnitName"] == sensor["AssociatedRaspberryPiUnit"]), None)
@@ -431,62 +456,44 @@ def Read_All_Sensor_Data(systemData):
 
 
 ############################################################
-def Prepare_and_Send_Message2(systemData, previous_database_send_time):
-    if update_time_flag(previous_database_send_time, int(systemData["DatabaseSendIntervalInSeconds"])):
-        packed_msg_processed=""
-        for sensor in systemData["SensingPorts"]:
-            if(sensor["IsDataReadyToSent"]==1):
-                packed_msg = pack_sensor_data_msg_2_v3(systemData["PCName"],
-                                                       sensor["NodeName"],
-                                                       sensor["PortName"],
-                                                       sensor["ProcessedValue"])
-
-                packed_msg_processed=packed_msg_processed+packed_msg
-                sensor["ProcessedValue"] = 0
-                sensor["IsDataReadyToSent"] = 0
-        if( packed_msg_processed!=""):
-            packed_msg_processed='2|' + packed_msg_processed
-            msg_to_file(os.path.join(text_file_path, "FormattedSystemData.txt"), packed_msg_processed)
-            ff = open(os.path.join(text_file_path, "CommunicationFlag.txt"), "w+")
-            ff.close()
-        if ConvertToBoolean(flag['msg_to_file_debug_flag']):
-            print(packed_msg_processed)
-            print('*****************************************************************************************')
-        previous_database_send_time = time.time()
-    return systemData, previous_database_send_time
-
-#############################$$$$$$$$$$ Network Integraty Check ########################################
-
-
-###########################################################
-# purpose: checks if a node is alive
-# parameters: nodeid
-# return: True, if  node is alive else False
-# status: complete,
-
-def CheckNodeStatus(nodename, associated_raspi, RetryCount=0):
-    nodeStatuslabel='sensor.'+nodename.replace('-','')+'_node_status'
-    url=systemData["UrlFetchSensorDataAndStatus"] \
-        .replace("<ip_address_homeAssist>",associated_raspi["ip_address_homeAssist"]) \
-        .replace("<portHomeAssist>",associated_raspi["portHomeAssist"]) \
-        .replace("<entity_id>",nodeStatuslabel) #tag
-    print(url, flush=True)
-    print(nodeStatuslabel, flush=True)
-    print("Inside checkNodeStatus", flush=True)
+# purpose: collect data from sensors
+# parameters: name of the node that the device is connected to, ID of the sensing device, z-wave network
+# return: current value of the sensor device
+# status: complete
+def read_sensor_data(sensor_id,associated_raspi,RetryCount=0):
     try:
-        response=requests.get(url, headers=associated_raspi["headers"])
-        print(response.status_code, flush=True)
-        if(response.status_code==200):
-            status=response.json()['state']
-            print(f"Status of {nodename}: {status}", flush=True)
-            if(status in ('alive','asleep')):
-                return True
+        url=systemData["UrlFetchSensorDataAndStatus"] \
+            .replace("<ip_address_homeAssist>",associated_raspi["ip_address_homeAssist"]) \
+            .replace("<portHomeAssist>",associated_raspi["portHomeAssist"]) \
+            .replace("<entity_id>",sensor_id)
+        response=requests.get(url, headers=associated_raspi["headers"]) #tag
+        print(f"URL used: {url}", flush=True)
+        print(f"Read sensor response: {response}", flush=True)
+
+        if response.status_code==200:
+           currentValue=response.json()['state']
+           if str(currentValue).lower() =="off":
+              return 0
+           if str(currentValue).lower() =="on":
+              return 1
+           currentValue = re.sub("[^0-9^.]", "", str(currentValue))
+           currentValue = (0.00 if currentValue == "" else float(currentValue))
+           return currentValue
         elif RetryCount<1 and not (response.ok):
             #rp.UpdateIPAddressForRaspberryPie(associated_raspi)
-            return CheckNodeStatus(nodename, associated_raspi,RetryCount+1)
-        return False
-    except:
-       return False
+            return read_sensor_data(sensor_id,associated_raspi,RetryCount+1)
+        return 0.00
+
+    except Exception as e:
+        print('WARNING!!!!!!!!!!!!!!!!!' + sensor_id + ' NOT FOUND/ NOT AVAILABLE\n\n\n -----------------\n\n', flush=True)
+        currentValue=0.00
+        print(e, flush=True)
+        print('\n ***************************************************************************************************** \n ', flush=True)
+    return currentValue
+
+
+
+
 
 
 # $$$$$$$$$$ Adjusting Node Config ########################################
@@ -501,6 +508,19 @@ def SetSensorReadingSensitivity(network):
     for node in network.nodes:
         network.nodes[node].set_config_param(67, 1)
         network.nodes[node].set_config_param(68, 60)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

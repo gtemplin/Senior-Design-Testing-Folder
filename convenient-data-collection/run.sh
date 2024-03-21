@@ -2,8 +2,8 @@
 
 # Build and run the container. Use the host network for easier communication with homeassistant container 
 docker build -t test:test .
-docker run --name test --network host -v /home/admin/senior-design-testing-folder/local-volume:/usr/src/app/BackupData -it test:test /bin/bash
-
+docker run --name test --network host -v /home/admin/senior-design-testing-folder/local-volume:/usr/src/app/BackupData -dit test:test #/bin/bash
+echo "Running detached (in background)"
 
 # Path to the 'cleaned' file
 cleaned_file="cleaned"
