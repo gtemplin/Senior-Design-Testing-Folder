@@ -255,7 +255,7 @@
   ],
   "SwitchingPorts": [
     {
-      "NodeName": "actuator_101",
+      "NodeName": "mini_smart_plug_2",
       "PortType": "switch",
       "PortName": "Switch",
       "PortLabel": "ZwaveZwitch_01",
@@ -274,7 +274,7 @@
       "PreviousSampleTime": 0
     },
     {
-      "NodeName": "actuator_102",
+      "NodeName": "mini_smart_plug_1",
       "PortType": "switch",
       "PortName": "Switch",
       "PortLabel": "ZwaveZwitch_02",

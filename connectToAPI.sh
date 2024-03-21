@@ -4,7 +4,8 @@
 #HA_ENDPOINT="http://homeassistant.local:8123/api/config"
 #HA_ENDPOINT="http://134.68.225.201:8123/api/config"
 HA_ENDPOINT="http://localhost:8123/api/config" # can use localhost, which will work regardless of internet connection 
-SENSOR_ENDPOINT="http://localhost:8123/api/states/sensor." #http://localhost:8123/api/states/sensor.snode_102_node_status
+SENSOR_ENDPOINT="http://localhost:8123/api/states/" #http://localhost:8123/api/states/sensor.snode_102_node_status
+TOGGLE_ENDPOINT="http://localhost:8123/api/services/switch/toggle"
 
 # Your Long-Lived Access Token
 ACCESS_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI0NDc4M2I2NGY0NGQ0YzhiODQ4OTkwNmE4NmEzMTY3NCIsImlhdCI6MTcxMDc4NTYzMSwiZXhwIjoyMDI2MTQ1NjMxfQ.svQMfjToDbpfI2wXrld6jdKx_nb62x3rJYj5Ebmy65E"
@@ -36,11 +37,36 @@ read_sensor_data(){
     	fi
 }
 
+
+# toggle the switch
+toggle_switch(){
+	SWITCH_ENTITY_ID="$1"
+	# Assuming ACCESS_TOKEN is already set in your environment
+	response=$(curl -s -X POST -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+	                     -H "Content-Type: application/json" \
+	                     -d "{\"entity_id\": \"${SWITCH_ENTITY_ID}\"}" \
+	                     http://localhost:8123/api/services/switch/toggle)
+
+	if echo "$response" | grep -q "id"; then
+		echo "Success: The switch has been toggled."
+	else
+		echo "Didn't toggle any switch"
+	fi
+}
+
+
 # Main script execution
 test_api_connectivity
 
-echo "Input the sensor's entity id: "
-read entity
-SENSOR_CURL="$SENSOR_ENDPOINT$entity"
-echo "URL: $SENSOR_CURL" 
-read_sensor_data $SENSOR_CURL
+# echo "Input the entity id: "
+# read entity
+# SENSOR_CURL="$SENSOR_ENDPOINT$entity"
+# echo "URL: $SENSOR_CURL" 
+# read_sensor_data $SENSOR_CURL
+# toggle_switch $entity
+
+toggle_switch "switch.mini_smart_plug_2"
+
+
+# 
+#
