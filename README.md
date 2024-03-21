@@ -5,6 +5,10 @@
 - On windows powershell, use this command to reset the host ssh connection: ssh-keygen -R 134.68.225.201
 - https://www.raspberrypi-spy.co.uk/2014/08/how-to-reset-a-forgotten-raspberry-pi-password/ <-- how to fix pi password error by fucking w/ the SD card
 
+### A note on python
+- To run in the background and save stdout to a file, run 'nohup python3 script.py &'
+- this will save stdout to a file called nohup.out
+
 
 ### Some Docker Notes
 - Docker initially requires sudo access
