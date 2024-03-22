@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 # Home Assistant API endpoints for making requests
 HA_ENDPOINT="http://localhost:8123/api/config" # can use localhost, which will work regardless of internet connection 
 SENSOR_ENDPOINT="http://localhost:8123/api/states/" # ./states gives statuses/readings from sensors in the network 
