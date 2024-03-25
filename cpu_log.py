@@ -3,7 +3,8 @@ import datetime
 import os
 import atexit 
 import time
-import csv 
+import csv
+import sys 
 
 container_to_stop = "test"  # stop the container in emergency case  
 
@@ -160,12 +161,21 @@ def createMessage():
 
 if __name__ == "__main__":
     print("Starting prolonged test")
-    atexit.register(save_to_disk) # call the save to disk function when finished 
+    args = []
+    for i, arg in enumerate(sys.argv[1:], 1):
+        print(arg)
+        args.append(arg)
+    numLogs = int(args[0])
+    print(numLogs)
+
     delayBetweenReads = 30 # seconds between each writing 
-    totalLogsDesired = 1210 # how many logs 
+    totalLogsDesired = numLogs # how many logs 
     diskWriteFrequency = 100 # how many logs in between saving to the disk 
-    runHrs = round((1210*30)/60/60, 2)
+    runHrs = round((totalLogsDesired*delayBetweenReads)/60/60, 2)
     print(f"Will run for about {runHrs} hours")
+    
+
+    atexit.register(save_to_disk) # call the save to disk function when finished 
 
     logCount = 0
     while True:
