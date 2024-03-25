@@ -9,6 +9,10 @@
 - To run in the background and save stdout to a file, run 'nohup python3 script.py &'
 - this will save stdout to a file called nohup.out
 
+### Link to UI to Database
+- https://in-engr-cymanii.engr.iupui.edu/TestEnvFlask/login
+- Username = SystemAdmin
+- Password = SystemAdmin
 
 ### Some Docker Notes
 - Docker initially requires sudo access
