@@ -17,6 +17,9 @@ if os.path.exists(main_directory):
 # Disk storage logs. Don't want to use these for frequent writes, only intermittently 
 SD_card_path = f'/home/admin/Senior-Design-Testing-Folder/performance_logs/{starting_datetime}.csv'
 
+# Will log the time that memory was 
+mem_log_path = f'/home/admin/Senior-Design-Testing-Folder/performance_logs/{starting_datetime}.log'
+
 if os.path.exists(SD_card_path):
     os.remove(SD_card_path)
     print("Removed SD Card Log")
@@ -114,9 +117,22 @@ def get_ram_usage():
     # Calculate the percentage of available memory
     if mem_total > 0:  # Prevent division by zero
         available_memory_percentage = (mem_available * 100.0) / mem_total
+        checkRamUsage(available_memory_percentage) # see if memory utilization has exceeded 
         return available_memory_percentage
     else:
         return "Memory total is zero, can't calculate percentage."
+
+# This will notify a user when memory reaches a certain percent utilization 
+def checkRamUsage(mem_pct):
+    if mem_pct > 75:
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") 
+        time_delta = starting_datetime - current_time
+        with open(mem_log_path, 'w') as f:
+            f.writelines(f"Stopped due to memory overuse")
+            f.writelines(f"Start time: {starting_datetime}")
+            f.writelines(f"Time to reach 75% utilizaton {time_delta}")
+        f.close()
+        exit(1)
 
 # Returns the cpu utilization percentage for all cores 
 def read_cpu_usage():
