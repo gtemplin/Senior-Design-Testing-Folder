@@ -210,3 +210,10 @@ if __name__ == "__main__":
 # If just using the functions 
 else:
     print("Imported cpu_log")
+    print("""
+        The 'get_cpu_temperature()' function checks the current CPU temperature.
+        The 'get_ram_usage()' function calculates and checks the available RAM percentage and triggers an alert if it's below a threshold.
+        The 'calculate_cpu_usage()' function computes CPU utilization over a time period to monitor system load.
+        """)
+
+
