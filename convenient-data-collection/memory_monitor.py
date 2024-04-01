@@ -92,37 +92,37 @@ def oldZip(mem_threshold, file_path, zipLocationPath, zipCount):
 
 # Determine if the backup text file is getting too large and needs to be zipped 
 # also needs to know how many zips have occurred 
-# file_path is the file that is getting zipped 
-# zipLocationPath is where the whole .zip file will be stored 
-def zipIfNeeded(file_path, zipLocationPath, zipCount):
-    # Get the size of the backup text file 
-    file_size = os.path.getsize(file_path)
+# directory is where the backup text file and zip files will be stored (/dev/shm as of now)
+def zipIfNeeded(directory, zipCount):
+    # Get the size of the backup text file
+    file2zip = os.path.join(directory,'BackupData.txt')
+    file_size = os.path.getsize(file2zip)
+    # Set where the zip file should be placed once created
+    zipFullPath = os.path.join(directory, f'ZipArchive{zipCount}.zip')
     # If the file has reached X KB, compress it using zip 
     if file_size >= 50e3:
-        with zipfile.ZipFile(zipLocationPath, 'w') as zip:
-                zip.write(file_path, arcname=f'ZipArchive{zipCount}.txt')
-        # Indicate a zip has occurred, remove the zipped file 
+        # zip 'file2zip', have name when extracted be 'ZipArchive.txt', save zipped file to zipFullPath
+        with zipfile.ZipFile(zipFullPath, 'w') as zip:
+                zip.write(file2zip, arcname=f'ZipArchive{zipCount}.txt')
+        # Indicate a zip has occurred, then delete the old .txt file to save space 
         zipCount += 1 
-        os.remove(file_path) # Delete the non-zipped file to save space 
+        os.remove(file2zip)
     return zipCount
 
 
-# Extracts one of the zipped backups, places it in it's own text file
-# Returns the unzipped file path, and also indicates this through decrementing the zipCount 
-# file_path is where the text file will be extracted to 
-# zipLocationPath is still where all of the zipped files go 
-def unZip(file_path, zipLocationPath, count):
-    target_extract_path = os.path.join(file_path, f'ZipArchive{count}.txt')
+# Extracts one of the zipped backups, places it in it's own text file, then returns path to the extracted text file
+def unZip(directory, zipCount):
+    # Path to the zip file to be extracted
+    path2zip = os.path.join(directory, f'ZipArchive{zipCount}.zip')
+    # Path to the extraction file 
+    extraction_path = os.path.join(directory, f'ZipArchive{zipCount}.txt')
 
-    # Extract the file
-    with zipfile.ZipFile(zipLocationPath, 'r') as zip_ref:
-        zip_ref.extract(f'ZipArchive{count}.txt', file_path)
+    # Extract the zip file and
+    with zipfile.ZipFile(path2zip, 'r') as zip_ref:
+        zip_ref.extractall(extraction_path)
 
-
-    extractedFilePath = os.path.join(file_path, f'Unzipped{count}.txt')
-    with zipfile.ZipFile(zipLocationPath, 'r') as zip_ref:
-        zip_ref.extract(f'ZipArchive{count}.txt', extractedFilePath)
-    return extractedFilePath 
+    # Return path to the extracted file
+    return extraction_path
 
 
 def zipTest():

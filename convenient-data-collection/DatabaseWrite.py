@@ -17,8 +17,6 @@ debug = False
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 zipCount = 0 # will keep track of the number of zips that have occurred 
-MEMORY_THRESHOLD = 25 # Once memory goes under this value, the backup text file will get zipped up 
-zip_backup_path = os.path.join(RAM_PATH, 'Backup.zip')
 
 # format a message and send to database
 # the asyncio loop lets this wait until complete w/o bottlenecking the whole program  
@@ -159,18 +157,18 @@ while True:
             print("CONNECTION IS DOWN--BACKING UP DATA", flush=True)
             write_to_backup(backup_file_path, fileContents)
             # Check to see if memory utilization is too high, resulting in the backup text file requiring a zip 
-            zipCount = memory_monitor.zipIfNeeded(backup_file_path, zip_backup_path, zipCount)
+            zipCount = memory_monitor.zipIfNeeded(RAM_PATH, zipCount)
 
         else:
             # Zip up the last instance to make sure the total memory is minimized (if another zip occurred previously)
             if zipCount > 0: 
-                zipCount = memory_monitor.zipIfNeeded(backup_file_path, zip_backup_path, zipCount) # Zip what's there now to prevent memory overuse 
+                zipCount = memory_monitor.zipIfNeeded(RAM_PATH, zipCount) # Zip what's there now to prevent memory overuse 
                 numBackups = zipCount
                 # Loop through all the archives, unzip each individual file, send to database, and then delete the unzipped archive 
                 for i in numBackups:
                     # Get one of the archived files, unzip and save to unzippedBackup path, write to the database
                     # Unzipped file is located in the ram path under Unzipped.txt
-                    unzippedBackup = memory_monitor.unZip(RAM_PATH, zip_backup_path, i)
+                    unzippedBackup = memory_monitor.unZip(RAM_PATH, i)
                     backup = open(unzippedBackup)
                     backupContents = backup.read()
                     start_index = 0
