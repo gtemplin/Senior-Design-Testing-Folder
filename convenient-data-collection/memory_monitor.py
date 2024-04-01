@@ -99,11 +99,7 @@ def zipIfNeeded(file_path, zipLocationPath, zipCount):
     file_size = os.path.getsize(file_path)
     # If the file has reached X KB, compress it using zip 
     if file_size >= 50e3:
-        if zipCount == 0:
-            mode = 'w'
-        else:
-            mode = 'a'
-        with zipfile.ZipFile(zipLocationPath, mode) as zip:
+        with zipfile.ZipFile(zipLocationPath, 'w') as zip:
                 zip.write(file_path, arcname=f'ZipArchive{zipCount}.txt')
         # Indicate a zip has occurred, remove the zipped file 
         zipCount += 1 
@@ -113,12 +109,19 @@ def zipIfNeeded(file_path, zipLocationPath, zipCount):
 
 # Extracts one of the zipped backups, places it in it's own text file
 # Returns the unzipped file path, and also indicates this through decrementing the zipCount 
-# file_path is where the text file will be extracted to (Unzipped.txt concatenated on)
+# file_path is where the text file will be extracted to 
 # zipLocationPath is still where all of the zipped files go 
-def unZip(file_path, zipLocationPath, zipCount):
-    extractedFilePath = os.path.join(file_path, 'Unzipped.txt')
+def unZip(file_path, zipLocationPath, count):
+    target_extract_path = os.path.join(file_path, f'ZipArchive{count}.txt')
+
+    # Extract the file
     with zipfile.ZipFile(zipLocationPath, 'r') as zip_ref:
-        zip_ref.extract(f'ZipArchive{zipCount}.txt', extractedFilePath)
+        zip_ref.extract(f'ZipArchive{count}.txt', file_path)
+
+
+    extractedFilePath = os.path.join(file_path, f'Unzipped{count}.txt')
+    with zipfile.ZipFile(zipLocationPath, 'r') as zip_ref:
+        zip_ref.extract(f'ZipArchive{count}.txt', extractedFilePath)
     return extractedFilePath 
 
 
