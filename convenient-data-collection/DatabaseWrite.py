@@ -5,20 +5,20 @@ import configparser # handle configuration files to store preferences
 import asyncio  # helps manage multiple IO related tasks 
 import urllib3  # used for making requests to web servers through http 
 
+import memory_monitor
 
 print("Starting DatabaseWrite.py", flush=True)
-# fp = open('Database.txt', 'x')
-# fp.close()
-# print("Test output", flush=True)
 
 Curpath = os.getenv('CURPATH', '/usr/src/app')
+RAM_PATH = os.getenv('RAMPATH', '/dev/shm')
 print(f'Current path for DatabaseWrite.py: {Curpath}', flush=True)
-
-RAM_storage_path = '/tmp/convenient-data-collection'
 
 debug = False
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+zipCount = 0 # will keep track of the number of zips that have occurred 
+MEMORY_THRESHOLD = 25 # Once memory goes under this value, the backup text file will get zipped up 
+zip_backup_path = os.path.join(RAM_PATH, 'Backup.zip')
 
 # format a message and send to database
 # the asyncio loop lets this wait until complete w/o bottlenecking the whole program  
@@ -81,12 +81,8 @@ config_file_path = os.path.join(Curpath, "ConfigurationFiles", "configCustomer.j
 config = json_to_dict(config_file_path)
 webserver_address = config['WebserverAddress']
 
-# Create path to backup text file 
-#text_files_folder_path = os.path.join(Curpath, "BackupData")
-backup_file_path = os.path.join(Curpath, "BackupData",  "BackupData.txt")
-print(backup_file_path, flush=True)
-
-# Create the backup text file 
+# Create path to backup text file (placed in RAM)
+backup_file_path = os.path.join(RAM_PATH, "BackupData.txt")
 if not os.path.isfile(backup_file_path):
     with open(backup_file_path, "x") as f:
         print(f"Backup text file created in {backup_file_path}", flush=True) # File is created, 'f.close()' is called automatically
@@ -108,8 +104,8 @@ if not os.path.isfile(backup_file_path):
 # If either of the flags are set, store the data from the file associated with it, then clear that file so that it can be used again later. 
 # Once it sees that a flag is set for communication, it formats it and sends it to the database 
 while True:
-    communication_flag_path = os.path.join(RAM_storage_path, "CommunicationFlag.txt") # fixthis should be going to RAM not disk. Maybe ask Chien if this is what it's supposed
-    communication_flag_actuator_path = os.path.join(RAM_storage_path, "CommunicationFlagActuator.txt")
+    communication_flag_path = os.path.join(RAM_PATH, "CommunicationFlag.txt") # fixthis should be going to RAM not disk. Maybe ask Chien if this is what it's supposed
+    communication_flag_actuator_path = os.path.join(RAM_PATH, "CommunicationFlagActuator.txt")
 
     # Create fresh files to send, and reset flags 
     if os.path.isfile(communication_flag_path) or os.path.isfile(communication_flag_actuator_path):
@@ -120,7 +116,7 @@ while True:
             except Exception:
                 print("CommunicationFlag is not deleted", flush=True)
                 pass
-            formatted_system_data_path = os.path.join(RAM_storage_path, "FormattedSystemData.txt")
+            formatted_system_data_path = os.path.join(RAM_PATH, "FormattedSystemData.txt")
             with open(formatted_system_data_path, "r+") as file:
                 fileContents = file.read()
                 file.seek(0)  # Move to the start of the file before truncating
@@ -133,7 +129,7 @@ while True:
             except Exception:
                 print("CommunicationFlagActuator is not deleted", flush=True)
                 pass
-            formatted_system_data_actuator_path = os.path.join(RAM_storage_path, "FormattedSystemDataActuator.txt")
+            formatted_system_data_actuator_path = os.path.join(RAM_PATH, "FormattedSystemDataActuator.txt")
             with open(formatted_system_data_actuator_path, "r+") as file2:
                 fileContentsActuator = file2.read()
                 file2.seek(0)  # Move to the start of the file before truncating
@@ -162,14 +158,40 @@ while True:
         if not successfulSend:
             print("CONNECTION IS DOWN--BACKING UP DATA", flush=True)
             write_to_backup(backup_file_path, fileContents)
+            # Check to see if memory utilization is too high, resulting in the backup text file requiring a zip 
+            zipCount = memory_monitor.zipIfNeeded(MEMORY_THRESHOLD, backup_file_path, zip_backup_path, zipCount)
+
         else:
-            backup = open(backup_file_path)
-            backupContents = backup.read()
-            start_index = 0
-            for i in range(0, len(backupContents), 1):
-                if backupContents[i] == "$":
-                    msg = backupContents[start_index: i]
-                    successfulSend = send_to_database(webserver_address, msg)
-                    start_index = i + 1
-                    if successfulSend:
-                        delete_from_file(backup_file_path, msg)
+            # Zip up the last instance to make sure the total memory is minimized (if another zip occurred previously)
+            if zipCount > 0: 
+                zipCount = memory_monitor.zipIfNeeded(100, backup_file_path, zip_backup_path, zipCount) # Zip what's there now to prevent memory overuse 
+                numBackups = zipCount
+                # Loop through all the archives, unzip each individual file, send to database, and then delete the unzipped archive 
+                for i in numBackups:
+                    # Get one of the archived files, unzip and save to unzippedBackup path, write to the database
+                    zipCount, unzippedBackup = memory_monitor.unZip(RAM_PATH, zip_backup_path, zipCount)
+                    backup = open(unzippedBackup)
+                    backupContents = backup.read()
+                    start_index = 0
+                    for i in range(0, len(backupContents), 1):
+                        if backupContents[i] == "$":
+                            msg = backupContents[start_index: i]
+                            successfulSend = send_to_database(webserver_address, msg)
+                            start_index = i + 1
+                            if successfulSend:
+                                delete_from_file(backup_file_path, msg)
+                    os.remove(unzippedBackup) # Delete the backup once parsed through it all 
+
+
+                # Managing backup when no zipping has occurred (or last zip has occurred)
+                else:
+                    backup = open(backup_file_path)
+                    backupContents = backup.read()
+                    start_index = 0
+                    for i in range(0, len(backupContents), 1):
+                        if backupContents[i] == "$":
+                            msg = backupContents[start_index: i]
+                            successfulSend = send_to_database(webserver_address, msg)
+                            start_index = i + 1
+                            if successfulSend:
+                                delete_from_file(backup_file_path, msg)

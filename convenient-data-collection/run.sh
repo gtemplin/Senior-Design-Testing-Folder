@@ -2,7 +2,19 @@
 
 # Build and run the container. Use the host network for easier communication with homeassistant container 
 docker build -t test:test .
-docker run --name test --network host -v /home/admin/senior-design-testing-folder/local-volume:/usr/src/app/BackupData -it test:test #/bin/bash
+
+#docker run --name test --network host -v /dev/shm:/dev/shm -v /home/admin/senior-design-testing-folder/local-volume:/usr/src/app/BackupData -it test:test /bin/bash
+
+# Run the container
+# Set up SD card volume and RAM stored volume 
+docker run --name test \
+  --network host \
+  -v /dev/shm:/dev/shm \
+  -v /home/admin/senior-design-testing-folder/local-volume:/usr/src/app/BackupData \
+  -it test:test /bin/bash
+
+# Note: the main terminal can only read data created by the container, but cannot modify it
+
 echo "Running detached (in background)"
 
 # Path to the 'cleaned' file
@@ -18,23 +30,3 @@ else
     echo "The 'cleaned' file was already set and does not contain 'True'."
 fi
 
-
-
-
-
-# # Build and run the container
-# docker build -t test:test .
-# docker run --name test -v /home/admin/senior-design-testing-folder/local-volume:/usr/src/app/BackupData -it test:test /bin/bash
-
-# # Check if cleaned is not set or is empty
-# if [ -z "$cleaned" ]; then
-#   # cleaned is not set or is empty, define and export it
-#     cleaned="False"
-#     export cleaned # make variable available to clean.sh
-#     echo "cleaned was not set, now set to 'False'"
-# else
-#   # cleaned was already set, so just ensure it's set to false 
-#     export cleaned = "False"
-# fi
-
-# # --network=host    <-- The network used by home assistant 

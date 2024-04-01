@@ -22,18 +22,13 @@ mem_log_path = f'/home/admin/Senior-Design-Testing-Folder/performance_logs/{star
 
 if os.path.exists(SD_card_path):
     os.remove(SD_card_path)
-    print("Removed SD Card Log")
-else:
-    print("Was no SD Card Log")
-
+    #print("Removed SD Card Log")
 
 # Frequently written to 
 RAM_storage_path = f'/dev/shm/temp_performance_logs_{starting_datetime}.csv'
 if os.path.exists(RAM_storage_path):
     os.remove(RAM_storage_path)
-    print("Removed Temp RAM Log")
-else: 
-    print("Was no RAM Log ")
+    #print("Removed Temp RAM Log")
 
 
 # Write to the CSV file stored in RAM 
@@ -209,11 +204,13 @@ if __name__ == "__main__":
 
 # If just using the functions 
 else:
+    if os.path.exists(mem_log_path):
+        os.remove(mem_log_path)
     print("Imported cpu_log")
     print("""
-        The 'get_cpu_temperature()' function checks the current CPU temperature.
-        The 'get_ram_usage()' function calculates and checks the available RAM percentage and triggers an alert if it's below a threshold.
-        The 'calculate_cpu_usage()' function computes CPU utilization over a time period to monitor system load.
+        - The 'get_cpu_temperature()' function checks the current CPU temperature.
+        - The 'get_ram_usage()' function calculates and checks the available RAM percentage and triggers an alert if it's below a threshold.
+        - The 'calculate_cpu_usage()' function computes CPU utilization over a time period to monitor system load.
         """)
 
 

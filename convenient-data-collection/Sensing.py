@@ -19,15 +19,11 @@ import urllib3
 
 
 # The path variable is passed when the script is called 
-Curpath = os.getenv('CURPATH', '/usr/src/app')
+Curpath = os.getenv('CURPATH', '/usr/src/app') # SD card storage
+RAM_PATH = os.getenv('RAMPATH', '/dev/shm') # RAM storage
 
 print(f'Current path for Sensing.py: {Curpath}', flush=True)
-
-# Where to put commonly used files 
-RAM_storage_path = '/tmp/convenient-data-collection'
-
-# Where to store text files 
-text_file_path = RAM_storage_path #os.path.join(Curpath, "TextFiles")
+text_file_path = RAM_PATH #temporary text files going to be stored in the RAM 
 
 
 

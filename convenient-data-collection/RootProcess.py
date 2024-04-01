@@ -7,6 +7,7 @@ import urllib3
 
 # CURPATH is an environment variable created by the Dockerfile 
 Curpath = os.getenv('CURPATH', '/usr/src/app')
+RAM_PATH = os.getenv('RAMPATH', '/dev/shm') # ENV RAMPATH=/dev/shm
 log_file_path = os.path.join(Curpath, "BackupData", "overnightlog.txt") # store the data logs in a text file 
 
 # The following path will only use RAM for storage 

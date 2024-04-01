@@ -6,6 +6,7 @@ WORKDIR /usr/src/app
 
 # Set the path environment variable 
 ENV CURPATH=/usr/src/app
+ENV RAMPATH=/dev/shm
 
 # Install requirements not in the standard library 
 COPY requirements.txt ./
