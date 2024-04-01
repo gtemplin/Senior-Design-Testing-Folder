@@ -1,4 +1,11 @@
 # Senior-Design-Testing-Folder
+
+## Things to add to the final readme
+- Current DockerHub link. Should probably make an official IAC account at some point
+- Command to run in order to build the image
+- Command to run in order to create a container that will work with the system 
+
+
 ### Raspberry Pi SSH Login
 - admin@134.68.225.201
 - password = admin
@@ -38,11 +45,7 @@
 
 # Todo List:
 - Once Docker Image is available, make sure that it can connect to the database consistently, and test adding sensors in the configuration file (Alyssa)
-- Start long-term monitoring of running system (Everyone)
-- Make sure Home Assistant Supervised restarts when the pi is turned off
 - Figure out platform error: "WARNING: The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64/v3) and no specific platform was requested"
-- Note on platform error: the container still ran and gathered data, but I don't know what trouble the error could end up causing later down the line
-- Figure out docker network (name is host) and how to add DNS resolution (Grant)
 - Show the system writing to the database and toggling actuators (ask Liya about this Monday)
 
 
