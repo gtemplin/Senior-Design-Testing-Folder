@@ -159,17 +159,18 @@ while True:
             print("CONNECTION IS DOWN--BACKING UP DATA", flush=True)
             write_to_backup(backup_file_path, fileContents)
             # Check to see if memory utilization is too high, resulting in the backup text file requiring a zip 
-            zipCount = memory_monitor.zipIfNeeded(MEMORY_THRESHOLD, backup_file_path, zip_backup_path, zipCount)
+            zipCount = memory_monitor.zipIfNeeded(backup_file_path, zip_backup_path, zipCount)
 
         else:
             # Zip up the last instance to make sure the total memory is minimized (if another zip occurred previously)
             if zipCount > 0: 
-                zipCount = memory_monitor.zipIfNeeded(100, backup_file_path, zip_backup_path, zipCount) # Zip what's there now to prevent memory overuse 
+                zipCount = memory_monitor.zipIfNeeded(backup_file_path, zip_backup_path, zipCount) # Zip what's there now to prevent memory overuse 
                 numBackups = zipCount
                 # Loop through all the archives, unzip each individual file, send to database, and then delete the unzipped archive 
                 for i in numBackups:
                     # Get one of the archived files, unzip and save to unzippedBackup path, write to the database
-                    zipCount, unzippedBackup = memory_monitor.unZip(RAM_PATH, zip_backup_path, zipCount)
+                    # Unzipped file is located in the ram path under Unzipped.txt
+                    unzippedBackup = memory_monitor.unZip(RAM_PATH, zip_backup_path, i)
                     backup = open(unzippedBackup)
                     backupContents = backup.read()
                     start_index = 0
@@ -182,16 +183,15 @@ while True:
                                 delete_from_file(backup_file_path, msg)
                     os.remove(unzippedBackup) # Delete the backup once parsed through it all 
 
-
-                # Managing backup when no zipping has occurred (or last zip has occurred)
-                else:
-                    backup = open(backup_file_path)
-                    backupContents = backup.read()
-                    start_index = 0
-                    for i in range(0, len(backupContents), 1):
-                        if backupContents[i] == "$":
-                            msg = backupContents[start_index: i]
-                            successfulSend = send_to_database(webserver_address, msg)
-                            start_index = i + 1
-                            if successfulSend:
-                                delete_from_file(backup_file_path, msg)
+            # Managing backup when no zipping has occurred, and everything is in a single file 
+            else:
+                backup = open(backup_file_path)
+                backupContents = backup.read()
+                start_index = 0
+                for i in range(0, len(backupContents), 1):
+                    if backupContents[i] == "$":
+                        msg = backupContents[start_index: i]
+                        successfulSend = send_to_database(webserver_address, msg)
+                        start_index = i + 1
+                        if successfulSend:
+                            delete_from_file(backup_file_path, msg)

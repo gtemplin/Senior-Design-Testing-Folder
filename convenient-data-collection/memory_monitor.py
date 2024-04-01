@@ -74,11 +74,8 @@ def calculate_cpu_usage(delay=1):
     return round(cpu_usage_percentage, 2)
 
 
-# Determine if the backup text file is getting too large and needs to be zipped 
-# also needs to know how many zips have occurred 
-# file_path is the file that is getting zipped 
-# zipLocationPath is where the whole .zip file will be stored 
-def zipIfNeeded(mem_threshold, file_path, zipLocationPath, zipCount):
+
+def oldZip(mem_threshold, file_path, zipLocationPath, zipCount):
     mem_remaining = 100 - get_memory_free() # how much memory is remaining & completely unused 
     if mem_remaining <= mem_threshold:
         # Either create the zip file or append to the zip file 
@@ -92,6 +89,28 @@ def zipIfNeeded(mem_threshold, file_path, zipLocationPath, zipCount):
         os.remove(file_path) # Delete the non-zipped file to save space 
     return zipCount
 
+
+# Determine if the backup text file is getting too large and needs to be zipped 
+# also needs to know how many zips have occurred 
+# file_path is the file that is getting zipped 
+# zipLocationPath is where the whole .zip file will be stored 
+def zipIfNeeded(file_path, zipLocationPath, zipCount):
+    # Get the size of the backup text file 
+    file_size = os.path.getsize(file_path)
+    # If the file has reached X KB, compress it using zip 
+    if file_size >= 50e3:
+        if zipCount == 0:
+            mode = 'w'
+        else:
+            mode = 'a'
+        with zipfile.ZipFile(zipLocationPath, mode) as zip:
+                zip.write(file_path, arcname=f'ZipArchive{zipCount}.txt')
+        # Indicate a zip has occurred, remove the zipped file 
+        zipCount += 1 
+        os.remove(file_path) # Delete the non-zipped file to save space 
+    return zipCount
+
+
 # Extracts one of the zipped backups, places it in it's own text file
 # Returns the unzipped file path, and also indicates this through decrementing the zipCount 
 # file_path is where the text file will be extracted to (Unzipped.txt concatenated on)
@@ -100,8 +119,7 @@ def unZip(file_path, zipLocationPath, zipCount):
     extractedFilePath = os.path.join(file_path, 'Unzipped.txt')
     with zipfile.ZipFile(zipLocationPath, 'r') as zip_ref:
         zip_ref.extract(f'ZipArchive{zipCount}.txt', extractedFilePath)
-    zipCount -= 1
-    return zipCount, extractedFilePath 
+    return extractedFilePath 
 
 
 def zipTest():
@@ -118,14 +136,6 @@ def zipTest():
 
 if __name__ == "__main__":
     print("Doesn't run standalone")
-    #zipTest()
-    file_path = '/home/admin/Senior-Design-Testing-Folder/convenient-data-collection/BackupTest.txt'
-    zip_file_path = '/home/admin/Senior-Design-Testing-Folder/convenient-data-collection/BackupTest.zip'
-    zipIfNeeded(99, file_path, zip_file_path, 0)
-    original_size = os.path.getsize(file_path)
-    zipped_size = os.path.getsize(zip_file_path)
-    print(f'Original size: {original_size/1000000} MB\nZipped size: {zipped_size/1000000} MB')
-    os.remove('BackupTest.zip')
 
 else:
     print("Importing memory monitor related ")
