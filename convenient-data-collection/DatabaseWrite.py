@@ -151,18 +151,19 @@ while True:
                 successfulSend = send_to_database(webserver_address, msg)
                 start_index = i+1
                 
-
+        
 # This portion backs up the data if it wasn't successful and sends any data in the backup text file to the database
+        maxBackupSize = 50e3
         if not successfulSend:
             print("CONNECTION IS DOWN--BACKING UP DATA", flush=True)
             write_to_backup(backup_file_path, fileContents)
             # Check to see if memory utilization is too high, resulting in the backup text file requiring a zip 
-            zipCount = memory_monitor.zipIfNeeded(RAM_PATH, zipCount)
+            zipCount = memory_monitor.zipIfNeeded(RAM_PATH, zipCount, maxBackupSize)
 
         else:
             # Zip up the last instance to make sure the total memory is minimized (if another zip occurred previously)
             if zipCount > 0: 
-                zipCount = memory_monitor.zipIfNeeded(RAM_PATH, zipCount) # Zip what's there now to prevent memory overuse 
+                zipCount = memory_monitor.zipIfNeeded(RAM_PATH, zipCount, maxBackupSize) # Zip what's there now to prevent memory overuse 
                 numBackups = zipCount
                 # Loop through all the archives, unzip each individual file, send to database, and then delete the unzipped archive 
                 for i in numBackups:
