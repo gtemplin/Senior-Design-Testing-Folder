@@ -153,7 +153,7 @@ while True:
                 
         
 # This portion backs up the data if it wasn't successful and sends any data in the backup text file to the database
-        maxBackupSize = 50e3
+        maxBackupSize = 5e3
         if not successfulSend:
             print("CONNECTION IS DOWN--BACKING UP DATA", flush=True)
             write_to_backup(backup_file_path, fileContents)
@@ -166,12 +166,12 @@ while True:
                 zipCount = memory_monitor.zipIfNeeded(RAM_PATH, zipCount, maxBackupSize) # Zip what's there now to prevent memory overuse 
                 numBackups = zipCount
                 # Loop through all the archives, unzip each individual file, send to database, and then delete the unzipped archive 
-                for i in numBackups:
+                for i in range(numBackups):
                     # Get one of the archived files, unzip and save to unzippedBackup path, write to the database
                     # Unzipped file is located in the ram path under Unzipped.txt
                     unzippedBackup = memory_monitor.unZip(RAM_PATH, i)
-                    backup = open(unzippedBackup)
-                    backupContents = backup.read()
+                    with open(unzippedBackup) as backup:
+                        backupContents = backup.read()          
                     start_index = 0
                     for i in range(0, len(backupContents), 1):
                         if backupContents[i] == "$":
@@ -181,11 +181,12 @@ while True:
                             if successfulSend:
                                 delete_from_file(backup_file_path, msg)
                     os.remove(unzippedBackup) # Delete the backup once parsed through it all 
+                zipCount = 0 # reset to indicate required backups have been dealt with 
 
             # Managing backup when no zipping has occurred, and everything is in a single file 
             else:
-                backup = open(backup_file_path)
-                backupContents = backup.read()
+                with open(backup_file_path) as backup:
+                    backupContents = backup.read()
                 start_index = 0
                 for i in range(0, len(backupContents), 1):
                     if backupContents[i] == "$":

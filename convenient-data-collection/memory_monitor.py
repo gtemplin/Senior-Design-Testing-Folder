@@ -117,6 +117,8 @@ def unZip(directory, zipCount):
     # Extract the zip file (should only be one)
     with zipfile.ZipFile(path2zip, 'r') as zip_ref:
         zip_ref.extract(f'ZipArchive{zipCount}.txt', directory)
+    # Remove the .zip file since it has been extracted 
+    os.remove(path2zip)
     # Return path to the extracted file
     extraction_path = os.path.join(directory, f'ZipArchive{zipCount}.txt')
     return extraction_path

@@ -11,7 +11,7 @@ docker run --name test \
   --network host \
   -v /dev/shm:/dev/shm \
   -v /home/admin/senior-design-testing-folder/local-volume:/usr/src/app/BackupData \
-  -it test:test /bin/bash
+  -it test:test #/bin/bash
 
 # Note: the main terminal can only read data created by the container, but cannot modify it
 

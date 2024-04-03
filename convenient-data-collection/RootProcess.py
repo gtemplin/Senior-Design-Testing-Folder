@@ -46,6 +46,23 @@ def labeled_exec_script(script_path):
         print(f"Error executing {script_name}: {e} <-- from {script_name}")
 
 
+def database_output(script_path):
+    script_name = os.path.basename(script_path)  # Extract the script name from the path
+    try:
+        # Start the subprocess and specify stdout and stderr to be piped
+        with subprocess.Popen(['python', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
+            # Monitor the stdout
+            for line in process.stdout:  # This will also capture stderr if you want them combined
+                if script_name == 'DatabaseWrite.py':
+                    print(f"{line.strip()} <-- from {script_name}\n\n\n")  
+            # Check for any errors, appending the script name as well
+            _, stderr = process.communicate()
+            if stderr:
+                print(f"Error executing {script_name}:\n{stderr.strip()} <-- from {script_name}")
+    except Exception as e:
+        print(f"Error executing {script_name}: {e} <-- from {script_name}")
+
+
 # Main Function 
 if __name__ == '__main__':
     try:
@@ -74,6 +91,6 @@ if __name__ == '__main__':
         pool = multiprocessing.Pool(processes=numProcesses)
         #pool.map(execute_script, processes)
         #pool.map(debug_exec_script, processes)
-        pool.map(labeled_exec_script, processes)
+        pool.map(database_output, processes) 
         pool.close()
         pool.join()
