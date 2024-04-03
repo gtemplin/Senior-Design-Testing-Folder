@@ -91,6 +91,6 @@ if __name__ == '__main__':
         pool = multiprocessing.Pool(processes=numProcesses)
         #pool.map(execute_script, processes)
         #pool.map(debug_exec_script, processes)
-        pool.map(database_output, processes) 
+        pool.map(execute_script, processes) 
         pool.close()
         pool.join()
