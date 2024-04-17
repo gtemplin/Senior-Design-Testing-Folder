@@ -1,5 +1,9 @@
 # Senior-Design-Testing-Folder
 
+## Links
+- Edging PC 1: TBD
+- Edging PC 2: http://134.68.225.201:8123
+
 ## Things to add to the final readme
 - Current DockerHub link. Should probably make an official IAC account at some point
 - Command to run in order to build the image
