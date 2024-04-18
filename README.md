@@ -2,7 +2,7 @@
 
 ## Links
 - Edging PC 1: http://134.68.225.200:8123
-- Username is 'admin' password is 'admin'
+- Username is 'admin' password is 'admin' (SSH)
 - Edging PC 2: http://134.68.225.201:8123
 - Username is 'admin2' password is 'admin'
 
