@@ -4,7 +4,8 @@
 - Edging PC 1: http://134.68.225.200:8123
 - Username is 'admin' password is 'admin' (SSH)
 - Edging PC 2: http://134.68.225.201:8123
-- Username is 'admin2' password is 'admin'
+- Username is 'admin' password is 'admin'
+- Home assistant username is 'admin2' and password is 'admin'
 
 ## Things to add to the final readme
 - Current DockerHub link. Should probably make an official IAC account at some point
