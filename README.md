@@ -53,6 +53,8 @@
 - Figure out platform error: "WARNING: The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64/v3) and no specific platform was requested"
 - Show the system writing to the database and toggling actuators (ask Liya about this Monday)
 
-
-  
-
+#Info for EdgingPC1
+- IP Address: 134.68.225.200
+- Home Assistant Login
+- - Username: SystemAdmin
+- - Password: SystemAdmin
