@@ -2,10 +2,19 @@
 
 ## Links
 - Edging PC 1: http://134.68.225.200:8123
-- Username is 'admin' password is 'admin' (SSH)
+- SSH Login
+- - Username: admin
+- - Password: admin
+- Home Assistant Login
+- - Username: SystemAdmin
+- - Password: SystemAdmin
 - Edging PC 2: http://134.68.225.201:8123
-- Username is 'admin' password is 'admin'
-- Home assistant username is 'admin2' and password is 'admin'
+- SSH Login
+- - Username: admin
+- - Password: admin
+- Home Assistant Login
+- - Username: admin2
+- - Password: admin
 
 ## Things to add to the final readme
 - Current DockerHub link. Should probably make an official IAC account at some point
@@ -54,9 +63,3 @@
 - Once Docker Image is available, make sure that it can connect to the database consistently, and test adding sensors in the configuration file (Alyssa)
 - Figure out platform error: "WARNING: The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64/v3) and no specific platform was requested"
 - Show the system writing to the database and toggling actuators (ask Liya about this Monday)
-
-# Info for EdgingPC1
-- IP Address: 134.68.225.200
-- Home Assistant Login
-- - Username: SystemAdmin
-- - Password: SystemAdmin
