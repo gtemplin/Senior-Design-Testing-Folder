@@ -63,3 +63,6 @@
 - Once Docker Image is available, make sure that it can connect to the database consistently, and test adding sensors in the configuration file (Alyssa)
 - Figure out platform error: "WARNING: The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64/v3) and no specific platform was requested"
 - Show the system writing to the database and toggling actuators (ask Liya about this Monday)
+
+# EdgingPC1 Stuff
+- Access token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmYjk5NGJlNzlhZGI0NjczOTc3NWMwMWMwZjk0YjYwNyIsImlhdCI6MTcxMzQ2NzU1NywiZXhwIjoyMDI4ODI3NTU3fQ.8k5Y4idmkfKkvVPPE7A-AfnEBRD00yRHI2mnzlnVff4
