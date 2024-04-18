@@ -1,7 +1,8 @@
 # Senior-Design-Testing-Folder
 
 ## Links
-- Edging PC 1: TBD
+- Edging PC 1: http://134.68.225.200:8123
+- Username is 'admin' password is 'admin'
 - Edging PC 2: http://134.68.225.201:8123
 - Username is 'admin2' password is 'admin'
 
@@ -53,7 +54,7 @@
 - Figure out platform error: "WARNING: The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64/v3) and no specific platform was requested"
 - Show the system writing to the database and toggling actuators (ask Liya about this Monday)
 
-#Info for EdgingPC1
+# Info for EdgingPC1
 - IP Address: 134.68.225.200
 - Home Assistant Login
 - - Username: SystemAdmin
